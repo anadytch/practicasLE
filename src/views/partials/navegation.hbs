@@ -1,0 +1,83 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">Legendary Evolution</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">About</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                {{#if user}}
+                {{#if user.perfilUser}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Modulos
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/informe/list">Informe</a>
+                            <a class="dropdown-item" href="/users/list">Usuarios</a>
+                            <a class="dropdown-item" href="/areas/list">Áreas</a>
+                            <a class="dropdown-item" href="/notes/list">Notas</a>
+                            <a class="dropdown-item" href="#">Configuraciones</a>
+                        </div>
+                    </li>
+                {{else}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Modulos
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/informe/listPersonal">Informe</a>
+                            <a class="dropdown-item" href="/notes/list">Notas</a>
+                        </div>
+                    </li>
+                {{/if}}
+
+                <!-- Menu de perfil -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{user.nombreUser}}
+                        <img src="{{user.rutaImgUser}}" alt="logo" class="rounded-circle"  height="30" style="width:30px;">
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <div class=" m-2 p-3">
+                            <div class="d-flex justify-content-center mb-3">
+                                <img src="{{user.rutaImgUser}}" alt="logo" class="rounded-circle" height="100" style="width:100px;">
+                            </div>
+                            <div class="text-center">
+                                <p class="font-weight-bold">
+                                    {{user.nombreUser}}
+                                </p>
+                                <p class="small text-secondary">
+                                    Ultimo login: {{ user.updatedAt }}<br>
+                                    {{user.areaUser}}
+                                </p>
+                            </div>
+                            <hr class="bg-secondary">
+                            <a href="/users/logout" class="btn btn-primary btn-sm btn-block">Salir</a>
+                        </div>
+                    </div>
+                </li>
+                {{else}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/signup">Registrar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/signin">Login</a>
+                </li>
+                {{/if}}
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <form action="/users/signUp" method="POST" enctype="multipart/form-data">
+                <div class="card-header text-center">
+                    <h5 class="card-title">Registrar nuevo usuario</h5>
+                </div>
+                <div class="card-body">
+                    <input type="hidden" name="perfilUser" value="0">
+                    <div id="imagenPrevia">
+                        <img src="/img/user-default.png" alt="logos de legendary evolution" width="90" height="90"
+                            class="rounded-circle mx-auto d-block mb-3" id="previsualizar">
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" name="fotoUser">
+                            <label class="custom-file-label" for="customFile">Subir imagen</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="dniUser" placeholder="Ingrese su DNI"
+                            value="{{dniUser}}">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="nombreUser"
+                            placeholder="Ingrese su nombre y apellidos" value="{{nombreUser}}">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="emailUser" placeholder="Ingrese su usuario"
+                            value="{{emailUser}}">
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <input type="password" class="form-control" name="passwordUser"
+                                    placeholder="Ingrese su contraseña" value="{{passwordUser}}">
+                            </div>
+                            <div class="col">
+                                <input type="password" class="form-control" name="passwordUserConfirm"
+                                    placeholder="Confirme su contraseña">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <select class="custom-select" name="areaUser">
+                            <option selected> Seleccionar un área</option>
+                            {{#each area}}
+                            <option value="{{tituloArea}}">{{ tituloArea }}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary btn-block">Registrar usuario</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

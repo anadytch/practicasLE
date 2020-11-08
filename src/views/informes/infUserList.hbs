@@ -1,0 +1,70 @@
+<h3>Control de Informes </h3>
+<hr class="my-4 bg-secondary">
+<div class="row">
+    <div class="col-md-5">
+        <div class="card">
+            <form action="/informe/add" method="POST" enctype="multipart/form-data">
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label for="inputNumeroInforme" class="col-sm-6 col-form-label">Nro. de informe del dia :
+                        </label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="numInforme" id="inputNumeroInforme" value="{{numInforme}}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="tituloInforme" placeholder="Ingrese un título"
+                            value="{{tituloInforme}}">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" name="descripcionInforme" rows="3"
+                            placeholder="Ingrese una descripción">{{descripcionInforme}}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" name="informeUser">
+                            <label class="custom-file-label" for="customFile">Subir archivo PDF</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-outline-primary btn-block">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <table class="table table-striped table-hover table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>N°</th>
+                    <th>Titulo</th>
+                    <th>Nro</th>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each informesPersonal}}
+                <tr>
+                    <th>{{i}}</th>
+                    <th>{{tituloInforme}}</th>
+                    <th>{{numInf}}</th>
+                    <th>{{descripcionInforme}}</th>
+                    <th>{{fechaInforme}}</th>
+                    <th>
+                        <div class="btn-group btn-group-sm">
+                            <form action="#" method="POST">
+                                <button type="submit" class="btn btn-danger btn-sm"><i
+                                        class="fas fa-trash-alt"></i></button>
+                            </form>
+                            <a href="#" class="btn btn-info" role="button"><i class="fas fa-edit"></i></a>
+                        </div>
+                    </th>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>

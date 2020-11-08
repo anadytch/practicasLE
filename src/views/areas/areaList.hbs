@@ -1,0 +1,74 @@
+<div class="row">
+    <div class="col-md-10">
+        <h3>Lista de Areas</h3>
+    </div>
+    <div class="col-md-2">
+        <a href="" class="btn btn-primary btn-block" data-toggle="modal" data-target="#nuevoArea"> Nuevo </a>
+    </div>
+</div>
+<hr class="my-4 bg-secondary">
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped table-hover table-sm">
+            <caption>Areas Habilitadas</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <th>N°</th>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Integrantes</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each area}}
+                <tr>
+                    <td> {{ i }} </td>
+                    <td>{{ titulo }}</td>
+                    <td>{{descripcion}}</td>
+                    <td>{{integrantes}}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="/areas/status/{{id}}" class="btn {{#if estado}} btn-success {{else}} btn-dark {{/if}}" role="button">
+                            <i class="fas {{#if estado}} fa-check {{else}} fa-times {{/if}}"></i></a>
+                            <form action="/areas/delete/{{id}}?_method=DELETE" method="POST">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
+                            </form>
+                            <a href="/areas/edit/{{id}}" class="btn btn-info" role="button"><i class="fas fa-edit"></i></a>
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="nuevoArea" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <form action="/areas/add" method="POST">
+            <div class="modal-header">
+                <h5 class="modal-title">Registrar nueva area</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" name="tituloArea" placeholder="Ingrese el nombre del area" class="form-control" value="{{tituloArea}}">
+                </div>
+                <div class="form-group">
+                    <textarea name="descripcionArea" cols="30" placeholder="Ingrese un descripción" class="form-control">{{descripcionArea}}</textarea>
+                </div>                                
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>

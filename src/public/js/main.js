@@ -15,7 +15,30 @@ $(function(){
         $.ajax({
             url: '/pruebas',
             success: function(informes){
-                console.log(informes);
+                let tbody = $('tbody');
+                let i = 0;
+                tbody.html('');
+                informes.forEach(informes => {
+                    i=i+1;
+                    tbody.append(`
+                        <tr>
+                            <th>${i}</th>
+                            <th>${informes.tituloInforme}</th>
+                            <th>${informes.numInforme}</th>
+                            <th>${informes.descripcionInforme}</th>
+                            <th>${informes.createdAt}</th>
+                            <th>
+                                <div class="btn-group btn-group-sm">
+                                    <form action="#" method="POST">
+                                        <button type="submit" class="btn btn-danger btn-sm"><i
+                                                class="fas fa-trash-alt"></i></button>
+                                    </form>
+                                    <a href="#" class="btn btn-info" role="button"><i class="fas fa-edit"></i></a>
+                                </div>
+                            </th>
+                        </tr>                    
+                    `);
+                });
             }
         })
     })

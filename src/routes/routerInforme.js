@@ -3,6 +3,7 @@ const router = Router();
 const path = require('path');
 const multer = require('multer');
 const uuid = require('uuid/v4');
+const modelsInforme = require('../models/modelsInforme');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -43,6 +44,12 @@ router.put('/informe/edit');
 
 //eliminar informe
 router.delete('/informe/delete');
+
+//para pruebas de json y ajax
+router.get('/pruebas', async (req, res) => {
+    const documentsInforme = await modelsInforme.find();
+    res.json(documentsInforme);
+})
 
 
 module.exports = router;

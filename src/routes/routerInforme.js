@@ -24,7 +24,8 @@ const { isAuthenticated } = require('../helpers/validation');
 const {
     renderInformeList,
     renderInformeListPersonal,
-    createInforme
+    createInforme,
+    listarInforme
 } = require('../controllers/controllersInforme');
 
 //listar los informes de cada personal
@@ -46,10 +47,7 @@ router.put('/informe/edit');
 router.delete('/informe/delete');
 
 //para pruebas de json y ajax
-router.get('/pruebas', async (req, res) => {
-    const documentsInforme = await modelsInforme.find();
-    res.json(documentsInforme);
-})
+router.get('/listar', listarInforme);
 
 
 module.exports = router;

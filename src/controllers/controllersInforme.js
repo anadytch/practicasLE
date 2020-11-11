@@ -7,23 +7,8 @@ const modelsUsers = require('../models/modelsUsers');
 
 //listar los informes de cada personal
 controllersInforme.renderInformeListPersonal = async (req, res) => {
-    var i = 1;
-    let collections = [];
     var num = new Date();
-
-    const documentsInforme = await modelsInforme.find({userInforme: req.user.id});
-    documentsInforme.forEach((documentsInforme) => {
-        collections.push({
-            i: i++,
-            id: documentsInforme._id,
-            numInf: documentsInforme.numInforme,
-            tituloInforme: documentsInforme.tituloInforme,
-            descripcionInforme: documentsInforme.descripcionInforme,
-            rutaInforme: documentsInforme.rutaInforme,
-            fechaInforme: documentsInforme.createdAt.toISOString().substring(0,10) + ' ' + documentsInforme.createdAt.toISOString().substring(12,19)
-        });
-    });
-    res.render('informes/infUserList', {informesPersonal : collections, numInforme: num.toISOString().substring(8,10)});
+    res.render('informes/infUserList', { numInforme: num.toISOString().substring(8,10)});
 };
 
 //listar todos los informes
@@ -110,6 +95,11 @@ controllersInforme.createInforme = async (req, res) => {
 };
 
 controllersInforme.renderInformeEdit = (req, res) => {
+}
+
+controllersInforme.listarInforme = async (req, res) => {
+    const documentsInforme = await modelsInforme.find({userInforme: req.user.id});
+    res.json(documentsInforme);
 }
 
 module.exports = controllersInforme;

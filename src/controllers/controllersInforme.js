@@ -112,4 +112,10 @@ controllersInforme.createInforme = async (req, res) => {
 controllersInforme.renderInformeEdit = (req, res) => {
 }
 
+controllersInforme.deleteInforme = async (req, res) => {
+    await modelsInforme.findByIdAndDelete(req.params.id);
+    req.flash('success_msj', 'Nota eliminado con exito');
+    res.json('Informe eliminado');
+}
+
 module.exports = controllersInforme;

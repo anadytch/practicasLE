@@ -23,7 +23,8 @@ const { isAuthenticated } = require('../helpers/validation');
 const {
     renderInformeList,
     renderInformeListPersonal,
-    createInforme
+    createInforme,
+    deleteInforme
 } = require('../controllers/controllersInforme');
 
 //listar los informes de cada personal
@@ -42,7 +43,7 @@ router.get('informe/edit');
 router.put('/informe/edit');
 
 //eliminar informe
-router.delete('/informe/delete');
+router.delete('/informe/delete:id', deleteInforme);
 
 
 module.exports = router;

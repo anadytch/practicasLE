@@ -80,7 +80,7 @@ controllersInforme.createInforme = async (req, res) => {
             descripcionInforme
         });
     }else{
-        const informePresentado = await modelsInforme.findOne({numInforme: numInforme, userInforme: req.user.id});
+        const informePresentado = false;//await modelsInforme.findOne({numInforme: numInforme, userInforme: req.user.id});
         if(informePresentado){
             req.flash('error_msj', 'Ya presento su informe del dia');
             res.redirect('/informe/listPersonal');
@@ -104,7 +104,10 @@ controllersInforme.renderInformeEdit = (req, res) => {
 }
 
 controllersInforme.deleteInforme = async (req, res) => {
-    await modelsInforme.findByIdAndDelete(req.params.id);
+    const deleteInforme = await modelsInforme.findByIdAndDelete(req.params.id);
+    if(deleteInforme.estadoInforme){
+        unlink(path.resolve('./src/public'+deleteInforme.rutaInforme));
+    }
     req.flash('success_msj', 'Nota eliminado con exito');
     res.json('Informe eliminado');
 }

@@ -41,18 +41,18 @@
             </div>
             <div class="modal-body">
                 <div class="form-group row">
-                    <label for="inputNumeroInforme" class="col-sm-6 col-form-label">Nro. de informe del dia :
+                    <label for="numInforme" class="col-sm-6 col-form-label">Nro. de informe del dia :
                     </label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="numInforme" id="inputNumeroInforme" value="{{numInforme}}" readonly>
+                        <input type="text" class="form-control" name="numInforme" id="numInforme" value="{{numInforme}}" readonly>
                     </div>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="tituloInforme" placeholder="Ingrese un título"
+                    <input type="text" class="form-control" name="tituloInforme" id="tituloInforme" placeholder="Ingrese un título"
                         value="{{tituloInforme}}">
                 </div>
                 <div class="form-group">
-                    <textarea class="form-control" name="descripcionInforme" rows="3"
+                    <textarea class="form-control" name="descripcionInforme" id="descripcionInforme" rows="3"
                         placeholder="Ingrese una descripción">{{descripcionInforme}}</textarea>
                 </div>
                 <div class="form-group">
@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+                <button type="submit" id="btn-NuevoInforme" class="btn btn-primary btn-block">Guardar</button>
             </div>
             </form>
         </div>

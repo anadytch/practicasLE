@@ -11,12 +11,6 @@ controllersInforme.renderInformeListPersonal = async (req, res) => {
     res.render('informes/infUserList', { numInforme: num.toISOString().substring(8,10)});
 };
 
-//listar los informes personales (AJAX)
-controllersInforme.listarInformePersonal = async (req, res) => {
-    const documentsInforme = await modelsInforme.find();
-    res.json(documentsInforme);
-}
-
 //listar todos los informes
 controllersInforme.renderInformeList = async (req, res) => {
     var i = 1;
@@ -66,9 +60,6 @@ controllersInforme.createInforme = async (req, res) => {
     if(!mimetype && !extname){
         errors.push({text: 'El archivo debe ser un documento Word o PDF'});
     }
-    if(!tituloInforme){
-        errors.push({text: 'Porfavor ingrese el titulo de su informe'});
-    }
     if(!descripcionInforme){
         errors.push({text: 'Porfavor ingrese la descripcion de su informe'});
     }
@@ -103,13 +94,23 @@ controllersInforme.createInforme = async (req, res) => {
 controllersInforme.renderInformeEdit = (req, res) => {
 }
 
+/*====================================*/
+/*=============== AJAX ===============*/
+/*====================================*/
+
+//listar en TABLE los informes personales (AJAX)
+controllersInforme.listarInformePersonal = async (req, res) => {
+    const documentsInforme = await modelsInforme.find();
+    res.json(documentsInforme);
+}
+
+//eliminar un registro con su documento de la TABLE del informe personañ (AJAX)
 controllersInforme.deleteInforme = async (req, res) => {
     const deleteInforme = await modelsInforme.findByIdAndDelete(req.params.id);
     if(deleteInforme.estadoInforme){
         unlink(path.resolve('./src/public'+deleteInforme.rutaInforme));
     }
-    req.flash('success_msj', 'Nota eliminado con exito');
-    res.json('Informe eliminado');
+    res.json('Se elimino correctamente el archivo');
 }
 
 module.exports = controllersInforme;

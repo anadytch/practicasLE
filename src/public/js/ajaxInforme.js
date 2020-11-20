@@ -1,8 +1,23 @@
 $(function () {
 
-    $("#btn-NuevoInforme").click(function () {
+    $("#btn-NuevoInforme").click(function (event) {
         validarForm();
     });
+
+    //editar un informe
+    $('table').on('click', '.btn-editar', function (event) {
+        event.preventDefault();
+        let id = $(this).attr('idInforme');
+        $.ajax({
+            url: '/informe/edit' + id,
+            method: 'GET',
+            success: function (documents) {
+                $("#tituloInforme").val(documents.tituloInforme);
+                $("#descripcionInforme").val(documents.descripcionInforme);
+
+            }
+        })
+    })
 
     //listar los informes personales
     listarInformes();
@@ -16,17 +31,17 @@ $(function () {
                 data.forEach(documents => {
                     i++;
                     valor += "<tr>" +
-                        "<th>" + i + "</th>" +
-                        "<th>" + documents.tituloInforme + "</th>" +
-                        "<th>" + documents.numInforme + "</th>" +
-                        "<th>" + documents.descripcionInforme + "</th>" +
-                        "<th>" + documents.createdAt + "</th>" +
-                        "<th>" +
+                        "<td>" + i + "</td>" +
+                        "<td>" + documents.tituloInforme + "</td>" +
+                        "<td>" + documents.numInforme + "</td>" +
+                        "<td>" + documents.descripcionInforme + "</td>" +
+                        "<td>" + documents.createdAt + "</td>" +
+                        "<td>" +
                         "<div class='btn-group btn-group-sm'>" +
-                        "<button class='btn btn-danger btn-sm btn-eliminar' data-id='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
-                        "<a href='#' class='btn btn-info btn-editar' role='button'><i class='fas fa-edit'></i></a>" +
+                        "<button class='btn btn-danger btn-sm btn-eliminar' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
+                        "<button class='btn btn-info btn-sm btn-editar' idInforme='" + documents._id + "' data-toggle='modal' data-target='#nuevoInforme'><i class='fas fa-edit'></i></button>" +
                         "</div>" +
-                        "<th>" +
+                        "</td>" +
                         "<tr>";
                 })
                 $('#tbodyInforme').html(valor);
@@ -38,7 +53,8 @@ $(function () {
     //eliminar un informe
     $('table').on('click', '.btn-eliminar', function (event) {
         event.preventDefault();
-        let id = $(this).attr('data-id');
+        let id = $(this).attr('idInforme');
+        
         Swal.fire({
             title: '¿Estas Seguro?',
             text: "¡Estas seguro que deseas eliminar este informe!",
@@ -71,21 +87,22 @@ $(function () {
 //validar el formulario de infUserList.hbs
 function validarForm() {
     if ($('#tituloInforme').val() == "") {
+        $("#tituloInforme").focus();
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
             text: '¡El campo titulo no puede estar vacio!'
         })
-        $("#tituloInforme").focus();
+        
         return false;
     }
     if (!$('#descripcionInforme').val()) {
+        $("#descripcionInforme").focus();
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
             text: '¡El campo descripcion no puede estar vacio!'
         })
-        $("#descripcionInforme").focus();
         return false;
     }
     if ($('#customFile').get(0).files.length === 0) {

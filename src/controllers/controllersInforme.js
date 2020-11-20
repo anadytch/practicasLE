@@ -89,14 +89,12 @@ controllersInforme.createInforme = async (req, res) => {
             res.redirect('/informe/listPersonal');
         }
     }
-};
+}
 
 controllersInforme.renderInformeEdit = (req, res) => {
 }
 
-/*====================================*/
 /*=============== AJAX ===============*/
-/*====================================*/
 
 //listar en TABLE los informes personales (AJAX)
 controllersInforme.listarInformePersonal = async (req, res) => {
@@ -104,13 +102,21 @@ controllersInforme.listarInformePersonal = async (req, res) => {
     res.json(documentsInforme);
 }
 
-//eliminar un registro con su documento de la TABLE del informe personañ (AJAX)
+//eliminar un registro con su documento de la TABLE del informe personal (AJAX)
 controllersInforme.deleteInforme = async (req, res) => {
     const deleteInforme = await modelsInforme.findByIdAndDelete(req.params.id);
     if(deleteInforme.estadoInforme){
         unlink(path.resolve('./src/public'+deleteInforme.rutaInforme));
     }
     res.json('Se elimino correctamente el archivo');
+}
+
+//CARGAR DATOS PARA EDITAR
+controllersInforme.cargarDatos = async (req, res) => {
+    const documentsInforme = await modelsInforme.findById(req.params.id);
+    res.json(documentsInforme);
+
+
 }
 
 module.exports = controllersInforme;

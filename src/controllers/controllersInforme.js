@@ -58,9 +58,6 @@ controllersInforme.createInforme = async (req, res) => {
     if(!mimetype && !extname){
         errors.push({text: 'El archivo debe ser un documento Word o PDF'});
     }
-    if(!descripcionInforme){
-        errors.push({text: 'Porfavor ingrese la descripcion de su informe'});
-    }
     if(errors.length > 0){
         res.render('informes/infUserList', {
             errors,

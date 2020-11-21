@@ -52,8 +52,4 @@ router.delete('/informe/delete:id', deleteInforme);
 //Cargar los datos para editar
 router.get('/informe/edit:id', loadInforme);
 
-//nuevo informe (AJAX)
-router.post('/informe/nuevo');
-
-
 module.exports = router;

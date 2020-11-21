@@ -8,7 +8,7 @@ $(function () {
 
     // (VALIDAR) validar campos del informe
     $("#btn-newInforme").click(function () {
-        validarForm();
+        validarForm()
     });
 
     $("#btn-editInforme").click(function () {

@@ -30,16 +30,7 @@ controllersNotes.createNotesNew = async (req, res) => {
 };
 
 controllersNotes.renderNotesList = async (req , res) => {
-    const documents = await modelsNotes.find({user: req.user.id}).sort({createdAt: 'desc'});
-    let collections = [];
-    documents.forEach((documents) => {
-        collections.push({
-            id: documents._id,
-            tituloNote: documents.tituloNote,
-            descripcionNote: documents.descripcionNote
-        })
-    })
-    res.render('notes/noteList', { noteList : collections });
+   res.render('notes/noteList');
 };
 
 controllersNotes.renderNotesEdit = async (req, res) => {
@@ -68,5 +59,11 @@ controllersNotes.deleteNotes = async (req, res) => {
     req.flash('success_msj', 'Nota eliminado con exito');
     res.redirect('/notes/list');
 };
+
+controllersNotes.listNotes = async (req, res) => {
+    const documentsNote = await modelsNotes.find({ user: req.user.id });
+    res.json(documentsNote);
+}
+
 
 module.exports = controllersNotes;

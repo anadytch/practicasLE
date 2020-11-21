@@ -24,9 +24,10 @@ const {
     renderInformeList,
     renderInformeListPersonal,
     createInforme,
+    listInformePersonal,
     deleteInforme,
-    listarInformePersonal,
-    cargarDatos
+    loadInforme,
+    uploadInforme
 } = require('../controllers/controllersInforme');
 
 //listar los informes de cada personal
@@ -38,22 +39,21 @@ router.get('/informe/list', isAuthenticated, renderInformeList);
 //registrar un nuevo informe
 router.post('/informe/add', isAuthenticated, upload, createInforme);
 
-//Cargar los datos para editar
-router.get('/informe/edit:id', cargarDatos);
-
 //Editar  informe
-router.put('/informe/edit');
+router.put('/informe/edit/:id', isAuthenticated, upload, uploadInforme);
 
 /*=============== AJAX ===============*/
+//listar informes personales (AJAX)
+router.get('/informe/listPersonal/list', listInformePersonal);
 
 //eliminar informe personales (AJAX)
 router.delete('/informe/delete:id', deleteInforme);
 
-//listar informes personales (AJAX)
-router.get('/informe/listar', listarInformePersonal);
+//Cargar los datos para editar
+router.get('/informe/edit:id', loadInforme);
 
 //nuevo informe (AJAX)
-//router.post('/informe/nuevo', nuevoInforme);
+router.post('/informe/nuevo');
 
 
 module.exports = router;

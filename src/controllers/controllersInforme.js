@@ -33,7 +33,7 @@ controllersInforme.renderInformeList = async (req, res) => {
     res.render('informes/infList', {informes : collections});
 };
 
-//crear un informes nuevo
+// (NUEVO) crear un informes nuevo
 controllersInforme.createInforme = async (req, res) => {
     const errors = [];
     
@@ -46,8 +46,6 @@ controllersInforme.createInforme = async (req, res) => {
         estadoInforme = true;
         rutaInforme = '/files/'+req.file.filename;
     }else{
-        //estadoInforme = false;
-        //rutaInforme = '/files/sinDocumento.png';
         errors.push({text: 'Porfavor suba su informe'});
     }
     const tamañoArchivo = req.file.size;
@@ -91,13 +89,70 @@ controllersInforme.createInforme = async (req, res) => {
     }
 }
 
-controllersInforme.renderInformeEdit = (req, res) => {
-}
+// (UPLOAD) editar informe
+controllersInforme.uploadInforme = async (req, res) => {
+    const errors = [];
+
+    const {
+        idInforme,
+        editNumInforme,
+        editTituloInforme,
+        editDescripcionInforme
+    } = req.body;
+    const docInforme = await modelsInforme.findOne({_id: idInforme});
+    if(req.file){
+        rutaInforme =  '/files/' + req.file.filename;
+        if(estadoInforme){
+            unlink(path.resolve('./src/public' + docInforme.rutaInforme));
+        }
+        estadoInforme = true;
+    }else{
+        estadoInforme = false;
+        rutaInforme = docInforme.rutaInforme;
+    }
+    if(errors.length > 0){
+        res.render('informes/infUserList', {
+            errors,
+            idInforme,
+            editNumInforme,
+            editTituloInforme,
+            editDescripcionInforme
+        });
+    }else{
+        await modelsInforme.findByIdAndUpdate(idInforme, {
+            numInforme: editNumInforme,
+            tituloInforme: editTituloInforme,
+            descripcionInforme :editDescripcionInforme,
+            estadoInforme,
+            rutaInforme,
+            userInforme: req.user.id
+        });
+        req.flash('success_msj', 'informe actualizada con exito');
+        res.redirect('/informe/listPersonal/');
+    }
+};
 
 /*=============== AJAX ===============*/
 
+// nuevo informe
+controllersInforme.nuevoInforme = async (req, res) => {
+/*    const {numInforme, tituloInforme, descripcionInforme} = req.body();
+    const newInforme = new modelsInforme({
+        numInforme,
+        tituloInforme,
+        descripcionInforme,
+        estadoInforme,
+        rutaInforme,
+        userInforme : req.user.id
+    });
+    await newInforme.save();
+    */
+   console.log(req.body);
+   console.log(req.file);
+}
+
 //listar en TABLE los informes personales (AJAX)
-controllersInforme.listarInformePersonal = async (req, res) => {
+controllersInforme.listInformePersonal = async (req, res) => {
     const documentsInforme = await modelsInforme.find();
     res.json(documentsInforme);
 }
@@ -111,12 +166,10 @@ controllersInforme.deleteInforme = async (req, res) => {
     res.json('Se elimino correctamente el archivo');
 }
 
-//CARGAR DATOS PARA EDITAR
-controllersInforme.cargarDatos = async (req, res) => {
+//Cargar datos del informe para poder editar
+controllersInforme.loadInforme = async (req, res) => {
     const documentsInforme = await modelsInforme.findById(req.params.id);
     res.json(documentsInforme);
-
-
 }
 
 module.exports = controllersInforme;

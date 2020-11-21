@@ -1,29 +1,86 @@
 $(function () {
 
-    $("#btn-NuevoInforme").click(function (event) {
+    // (MOSTRAR NOMBRE DEL ARCHIVO) mostrar el nombre de archivo a subir
+    $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+
+    // (VALIDAR) validar campos del informe
+    $("#btn-newInforme").click(function () {
         validarForm();
     });
 
-    //editar un informe
-    $('table').on('click', '.btn-editar', function (event) {
+    $("#btn-editInforme").click(function () {
+        if ($('#editTituloInforme').val() == "") {
+            $("#editTituloInforme").focus();
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '¡El campo titulo no puede estar vacio!'
+            })
+            
+            return false;
+        }
+        if (!$('#editDescripcionInforme').val()) {
+            $("#editDescripcionInforme").focus();
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '¡El campo descripcion no puede estar vacio!'
+            })
+            return false;
+        }
+        return true;
+    });
+
+    //Guardar nuevo informe
+    /*
+    $('#formInforme').on('submit', function (event) {
+        event.preventDefault();
+        let numInforme = $('#numInforme');
+        let tituloInforme = $('#tituloInforme');
+        let descripcionInforme = $('#descripcionInforme');
+        if(validarForm()){
+            $.ajax({
+                url: '/informe/nuevo',
+                method: 'POST',
+                data: {
+                    numInforme: numInforme.val(),
+                    tituloInforme: tituloInforme.val(),
+                    descripcionInforme: descripcionInforme.val()
+                },
+                success: function(response) {
+                    console.log('mensaje del ajax');
+                    console.log(response);
+                }
+            });
+        }
+    })
+    */
+    // (LOAD) cargar datos un informe
+    $('table').on('click', '.btn-loadInforme', function (event) {
         event.preventDefault();
         let id = $(this).attr('idInforme');
         $.ajax({
             url: '/informe/edit' + id,
             method: 'GET',
             success: function (documents) {
-                $("#tituloInforme").val(documents.tituloInforme);
-                $("#descripcionInforme").val(documents.descripcionInforme);
+                $("#formEditInforme").attr('action','/informe/edit/' + documents._id + '?_method=PUT');
+                $("#idInforme").val(documents._id);
+                $("#editNumInforme").val(documents.numInforme);
+                $("#editTituloInforme").val(documents.tituloInforme);
+                $("#editDescripcionInforme").val(documents.descripcionInforme);
 
             }
         })
     })
 
-    //listar los informes personales
+    // (LISTAR DE UN USUARIO) listar los informes personales
     listarInformes();
     function listarInformes() {
         $.ajax({
-            url: '/informe/listar',
+            url: '/informe/listPersonal/list',
             success: function (data) {
                 var valor = '';
                 let i = 0;
@@ -38,8 +95,8 @@ $(function () {
                         "<td>" + documents.createdAt + "</td>" +
                         "<td>" +
                         "<div class='btn-group btn-group-sm'>" +
-                        "<button class='btn btn-danger btn-sm btn-eliminar' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
-                        "<button class='btn btn-info btn-sm btn-editar' idInforme='" + documents._id + "' data-toggle='modal' data-target='#nuevoInforme'><i class='fas fa-edit'></i></button>" +
+                        "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
+                        "<button class='btn btn-info btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
                         "</div>" +
                         "</td>" +
                         "<tr>";
@@ -50,8 +107,8 @@ $(function () {
         });
     }
 
-    //eliminar un informe
-    $('table').on('click', '.btn-eliminar', function (event) {
+    // (DELETE) eliminar un informe
+    $('table').on('click', '.btn-deleteInforme', function (event) {
         event.preventDefault();
         let id = $(this).attr('idInforme');
         
@@ -84,7 +141,7 @@ $(function () {
     })
 })
 
-//validar el formulario de infUserList.hbs
+// (FUNCTION DE VALIDAR) validar el formulario de infUserList.hbs
 function validarForm() {
     if ($('#tituloInforme').val() == "") {
         $("#tituloInforme").focus();
@@ -105,7 +162,7 @@ function validarForm() {
         })
         return false;
     }
-    if ($('#customFile').get(0).files.length === 0) {
+    if ($('#informeUser').get(0).files.length === 0) {
         Swal.fire({
             icon: 'error',
             title: 'Oops...',

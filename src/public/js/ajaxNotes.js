@@ -1,5 +1,5 @@
 $( function () {
-    
+
     // (LISTAR NOTES) listar las notas
     listarNotes();
     function listarNotes() {
@@ -14,7 +14,7 @@ $( function () {
                                 "<div class='card-body'>" +
                                     "<h4 class='card-title d-flex justify-content-between align-items-center'>" +
                                         documents.tituloNote +
-                                        "<a data-toggle='modal' data-target='#editNote'><i class='fas fa-edit'></i></a>" +
+                                        "<a  class='btn-loadNotes' idNotes='"+ documents._id +"' data-toggle='modal' data-target='#editNote'><i class='fas fa-edit'></i></a>" +
                                     "</h4>" +
                                     "<p>" +
                                         documents.descripcionNote +
@@ -43,25 +43,28 @@ $( function () {
         event.preventDefault();
         let tituloNote = $('#tituloNote');
         let descripcionNote = $('#descripcionNote');
-        $.ajax({
-            url: '/notes/nuevo',
-            method: 'POST',
-            data: {
-                tituloNote: tituloNote.val(),
-                descripcionNote: descripcionNote.val()
-            },
-            success: function(response) {
-                tituloNote.val('');
-                descripcionNote.val('');
-                listarNotes();
-            }
-        });
+        if(validarFormNewNote()){
+            $.ajax({
+                url: '/notes/add',
+                method: 'POST',
+                data: {
+                    tituloNote: tituloNote.val(),
+                    descripcionNote: descripcionNote.val()
+                },
+                success: function(response) {
+                    tituloNote.val('');
+                    descripcionNote.val('');
+                    listarNotes();
+                    $('#btn-cerrarModalNewNote').click();
+                    Swal.fire(
+                        'Guardado!',
+                        'La nota se guardo con exito',
+                        'success'
+                    );
+                }
+            });
+        }
     })
-
-    // (VALIDAR) validar y cerrar el modal
-    $('#btn-newNote').click( function () {
-        $('#newNote').modal('hide');
-    });
 
     // (DELETE) eliminar un notas
     $('div').on('click', '.btn-deleteNotes' , function (event) {
@@ -70,7 +73,7 @@ $( function () {
         
         Swal.fire({
             title: '¿Estas Seguro?',
-            text: "¡Estas seguro que deseas eliminar este informe!",
+            text: "¡Estas seguro que deseas eliminar esta nota!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -80,14 +83,14 @@ $( function () {
             if (result.isConfirmed) {
 
                 $.ajax({
-                    url: '/notes/deletes/' + id,
+                    url: '/notes/delete/' + id,
                     method: 'DELETE',
                     success: function (data) {
                         Swal.fire(
                             'Eliminado!',
                             data,
                             'success'
-                        )
+                        );
                         listarNotes();
                     }
                 })
@@ -96,4 +99,103 @@ $( function () {
         })
     });
 
+    //(LOAD) cargar datos listo para ser editados
+    $('div').on('click', '.btn-loadNotes', function (event) {
+        event.preventDefault();
+        let id = $(this).attr('idNotes');
+        $("#formEditNote").attr('action','');
+        $('#idNote').val('');
+        $('#editTituloNote').val('');
+        $('#editDescripcionNote').val('');
+
+        $.ajax({
+            url: '/notes/load/'+ id,
+            method: 'GET',
+            success: function(documents){
+                $("#formEditNote").attr('action','/notes/edit/' + documents._id + '?_method=PUT');
+                $('#idNote').val(documents._id);
+                $('#editTituloNote').val(documents.tituloNote);
+                $('#editDescripcionNote').val(documents.descripcionNote);
+                $('#btn-editNote').attr('idNoteUpdate', documents._id);
+            }
+        });
+    });
+
+    //(UPDATE) editar o actualizar una nota
+    $('#formEditNote').on('submit', function (event) {
+        event.preventDefault();
+        let idNote = $('#idNote').val();
+        let tituloNote = $('#editTituloNote');
+        let descripcionNote = $('#editDescripcionNote');
+        if(validarFormEditNote() ){
+            $.ajax({
+                url: '/notes/edit/' + idNote,
+                method: 'PUT',
+                data: {
+                    idNote: idNote,
+                    tituloNote: tituloNote.val(),
+                    descripcionNote: descripcionNote.val()
+                },
+                success: function(response) {
+                    tituloNote.val('');
+                    descripcionNote.val('');
+                    listarNotes();
+                    $('#btn-cerrarModalEditNote').click();
+                    Swal.fire(
+                        'Actualizado!',
+                        'La nota se actualizo exitosamente',
+                        'success'
+                    );
+                }
+            });
+        }
+    })
+
 })  //fin
+
+// (FUNCTION) validar el formulario de noteList.hbs
+function validarFormNewNote() {
+    if ($('#tituloNote').val() == "") {
+        $("#tituloNote").focus();
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡El campo titulo no puede estar vacio!'
+        })
+        
+        return false;
+    }
+    if (!$('#descripcionNote').val()) {
+        $("#descripcionNote").focus();
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡El campo descripcion no puede estar vacio!'
+        })
+        return false;
+    }
+    return true;
+}
+
+function validarFormEditNote() {
+    if ($('#editTituloNote').val() == "") {
+        $("#editTituloNote").focus();
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡El campo titulo no puede estar vacio!'
+        })
+        
+        return false;
+    }
+    if (!$('#editDescripcionNote').val()) {
+        $("#editDescripcionNote").focus();
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡El campo descripcion no puede estar vacio!'
+        })
+        return false;
+    }
+    return true;
+}

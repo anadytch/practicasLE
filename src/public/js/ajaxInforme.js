@@ -34,30 +34,6 @@ $(function () {
         return true;
     });
 
-    //Guardar nuevo informe
-    /*
-    $('#formInforme').on('submit', function (event) {
-        event.preventDefault();
-        let numInforme = $('#numInforme');
-        let tituloInforme = $('#tituloInforme');
-        let descripcionInforme = $('#descripcionInforme');
-        if(validarForm()){
-            $.ajax({
-                url: '/informe/nuevo',
-                method: 'POST',
-                data: {
-                    numInforme: numInforme.val(),
-                    tituloInforme: tituloInforme.val(),
-                    descripcionInforme: descripcionInforme.val()
-                },
-                success: function(response) {
-                    console.log('mensaje del ajax');
-                    console.log(response);
-                }
-            });
-        }
-    })
-    */
     // (LOAD) cargar datos un informe
     $('table').on('click', '.btn-loadInforme', function (event) {
         event.preventDefault();

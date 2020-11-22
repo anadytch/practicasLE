@@ -11,7 +11,6 @@
     <!-- Listar las notes -->
 </div>
 
-
 <!-- Modal de nueva Nota -->
 <div class="modal fade" id="newNote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -19,7 +18,7 @@
             <form action="" method="POST" enctype="multipart/form-data" id="formNotes">
             <div class="modal-header">
                 <h5 class="modal-title">Registrar nueva Nota</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" id="btn-cerrarModalNewNote" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -34,6 +33,7 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" id="btn-newNote" class="btn btn-primary btn-block">Guardar</button>
+
             </div>
             </form>
         </div>
@@ -46,10 +46,10 @@
         <div class="modal-content">
             <form action="" method="POST" enctype="multipart/form-data" id="formEditNote">
             <input type="hidden" name="_method" value="PUT">
-            <input type="hidden" name="idInforme" id="idInforme">
+            <input type="hidden" name="idNote" id="idNote">
             <div class="modal-header">
                 <h5 class="modal-title">Editar Nota</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" id="btn-cerrarModalEditNote" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

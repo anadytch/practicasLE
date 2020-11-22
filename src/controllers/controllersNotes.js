@@ -1,4 +1,5 @@
 const controllersNotes = {};
+const { models } = require('mongoose');
 const modelsNotes = require('../models/modelsNotes');
 
 controllersNotes.renderNotesForm = (req, res) => {
@@ -63,6 +64,24 @@ controllersNotes.deleteNotes = async (req, res) => {
 controllersNotes.listNotes = async (req, res) => {
     const documentsNote = await modelsNotes.find({ user: req.user.id });
     res.json(documentsNote);
+}
+
+controllersNotes.nuevoNotes = async (req, res) => {
+    
+    const {tituloNote, descripcionNote} = req.body;
+    const newNotes = new modelsNotes({
+        tituloNote,
+        descripcionNote,
+        user: req.user.id
+    });
+    await newNotes.save();
+    console.log(req.body);
+    res.json(newNotes);
+}
+
+controllersNotes.deleteNot = async (req, res) => {
+    await modelsNotes.findByIdAndDelete(req.params.id);
+    res.json('Se elimino correctamente la nota');
 }
 
 

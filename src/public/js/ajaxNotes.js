@@ -1,14 +1,13 @@
 $( function () {
     
-    // (LISTAR DE UN USUARIO) listar los informes personales
-    listarInformes();
-    function listarInformes() {
+    // (LISTAR NOTES) listar las notas
+    listarNotes();
+    function listarNotes() {
         $.ajax({
             url: '/notes/listNote',
             success: function (data) {
                 var valor = '';
-                console.log(data);
-                if(data){
+                if(data.length != 0){
                     data.forEach(documents => {
                         valor += "<div class='col-md-3'>" +
                             "<div class='card bg-light mb-3'>" +
@@ -20,10 +19,7 @@ $( function () {
                                     "<p>" +
                                         documents.descripcionNote +
                                     "</p>" +
-                                    "<form action='/notes/delete/{{id}}?_method=DELETE' method='POST'>" +
-                                        "<input type='hidden' name='_method' value='DELETE'>" +
-                                        "<button type='submit' class='btn btn-warning btn-block btn-sm'>Eliminar</button>" +
-                                    "</form>" +
+                                    "<button class='btn btn-warning btn-block btn-sm btn-deleteNotes' idNotes='" + documents._id + "'>Eliminar</button>" +
                                 "</div>" +
                             "</div>" +
                         "</div>";
@@ -41,5 +37,63 @@ $( function () {
             }
         });
     }
+
+    //(NEW) guardar una nueva note
+    $('#formNotes').on('submit', function (event) {
+        event.preventDefault();
+        let tituloNote = $('#tituloNote');
+        let descripcionNote = $('#descripcionNote');
+        $.ajax({
+            url: '/notes/nuevo',
+            method: 'POST',
+            data: {
+                tituloNote: tituloNote.val(),
+                descripcionNote: descripcionNote.val()
+            },
+            success: function(response) {
+                tituloNote.val('');
+                descripcionNote.val('');
+                listarNotes();
+            }
+        });
+    })
+
+    // (VALIDAR) validar y cerrar el modal
+    $('#btn-newNote').click( function () {
+        $('#newNote').modal('hide');
+    });
+
+    // (DELETE) eliminar un notas
+    $('div').on('click', '.btn-deleteNotes' , function (event) {
+        event.preventDefault();
+        let id = $(this).attr('idNotes');
+        
+        Swal.fire({
+            title: '¿Estas Seguro?',
+            text: "¡Estas seguro que deseas eliminar este informe!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Si, bórralo!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $.ajax({
+                    url: '/notes/deletes/' + id,
+                    method: 'DELETE',
+                    success: function (data) {
+                        Swal.fire(
+                            'Eliminado!',
+                            data,
+                            'success'
+                        )
+                        listarNotes();
+                    }
+                })
+                
+            }
+        })
+    });
 
 })  //fin

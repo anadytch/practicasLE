@@ -11,7 +11,9 @@ const {
     renderNotesEdit,
     updateNotes,
     deleteNotes,
-    listNotes
+    listNotes,
+    nuevoNotes,
+    deleteNot
 } = require('../controllers/controllersNotes');
 
 // create notes
@@ -31,5 +33,11 @@ router.delete('/notes/delete/:id', isAuthenticated, deleteNotes);
 /*=============== AJAX ===============*/
 //listar notas personales (AJAX)
 router.get('/notes/listNote', listNotes);
+
+//(NEW) guardar una nueva note
+router.post('/notes/nuevo', nuevoNotes);
+
+//(DELETE) eliminar una nota
+router.delete('/notes/deletes/:id', deleteNot );
 
 module.exports = router;

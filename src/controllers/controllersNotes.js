@@ -1,45 +1,9 @@
 const controllersNotes = {};
+const { models } = require('mongoose');
 const modelsNotes = require('../models/modelsNotes');
 
-controllersNotes.renderNotesForm = (req, res) => {
-    res.render('notes/noteNew');
-};
-
-controllersNotes.createNotesNew = async (req, res) => {
-    const {tituloNote, descripcionNote} = req.body;
-    const errors = [];
-    if(!tituloNote){
-        errors.push({text: 'Porfavor ingrese un título.'});
-    }
-    if(!descripcionNote){
-        errors.push({text: 'Porfavor ingrese una descripción.'});
-    }
-    if(errors.length > 0){
-        res.render('notes/noteNew', {
-            errors,
-            tituloNote,
-            descripcionNote
-        });
-    }else{
-        const newNote = new modelsNotes({tituloNote, descripcionNote});
-        newNote.user = req.user.id;
-        await newNote.save();   //metodo para guardar el document en el DB
-        req.flash('success_msj', 'Nota agregada con exito');
-        res.redirect('/notes/list');
-    }
-};
-
 controllersNotes.renderNotesList = async (req , res) => {
-    const documents = await modelsNotes.find({user: req.user.id}).sort({createdAt: 'desc'});
-    let collections = [];
-    documents.forEach((documents) => {
-        collections.push({
-            id: documents._id,
-            tituloNote: documents.tituloNote,
-            descripcionNote: documents.descripcionNote
-        })
-    })
-    res.render('notes/noteList', { noteList : collections });
+   res.render('notes/noteList');
 };
 
 controllersNotes.renderNotesEdit = async (req, res) => {
@@ -48,25 +12,49 @@ controllersNotes.renderNotesEdit = async (req, res) => {
         req.flash('error_msj', 'No autorizado');
         return res.redirect('/notes/list');
     }
-    let collections = [];
-    collections.push({
-        tituloNote: documents.tituloNote,
-        descripcionNote: documents.descripcionNote
-    });
-    res.render('notes/noteEdit', {documents});
+    res.render('notes/noteEdit');
 }
 
-controllersNotes.updateNotes = async (req, res) => {
-    const {tituloNote, descripcionNote} = req.body;
-    await modelsNotes.findByIdAndUpdate(req.params.id, {tituloNote, descripcionNote});
-    req.flash('success_msj', 'Nota actualizada con exito');
-    res.redirect('/notes/list');
-};
+/*=============== AJAX ===============*/
+//(LIST) listar notas personales - AJAX
+controllersNotes.listNotes = async (req, res) => {
+    const documentsNote = await modelsNotes.find({ user: req.user.id });
+    res.json(documentsNote);
+}
 
+// (NEW) guardar una nueva notA - AJAX
+controllersNotes.createNotes = async (req, res) => {
+    
+    const {tituloNote, descripcionNote} = req.body;
+    const newNotes = new modelsNotes({
+        tituloNote,
+        descripcionNote,
+        user: req.user.id
+    });
+    await newNotes.save();
+    res.json(newNotes);
+}
+
+// (DELETE) eliminar una nota - AJAX
 controllersNotes.deleteNotes = async (req, res) => {
     await modelsNotes.findByIdAndDelete(req.params.id);
-    req.flash('success_msj', 'Nota eliminado con exito');
-    res.redirect('/notes/list');
-};
+    res.json('La nota se elimino correctamente');
+}
+
+// (LOAD) cargar los datos de una nota - AJAX
+controllersNotes.loadNotes = async (req, res) => {
+    const documentsNote = await modelsNotes.findById(req.params.id);
+    res.json(documentsNote);
+}
+
+// (UPLOAD) actualizar una nota - AJAX
+controllersNotes.updateNotes = async (req, res) => {
+    const {idNote, tituloNote, descripcionNote} = req.body;
+    const updateNote = await modelsNotes.findByIdAndUpdate(idNote, {
+        tituloNote,
+        descripcionNote
+    });
+    res.json(updateNote);
+}
 
 module.exports = controllersNotes;

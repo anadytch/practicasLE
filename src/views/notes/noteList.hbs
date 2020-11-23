@@ -3,35 +3,69 @@
         <h3>Lista de Notas</h3>
     </div>
     <div class="col-md-2">
-        <a href="/notes/add" class="btn btn-primary btn-block">Nueva Nota</a>
+        <a class="btn btn-primary btn-block" data-toggle="modal" data-target="#newNote">Nueva Nota</a>
     </div>
 </div>
 <hr class="my-4 bg-secondary">
-<div class="row">
-    {{#each noteList}}
-    <div class="col-md-3">
-        <div class="card bg-light mb-3">
-            <div class="card-body">
-                <h4 class="card-title d-flex justify-content-between align-items-center">
-                    {{ tituloNote }}
-                    <a href="/notes/edit/{{id}}"><i class="fas fa-edit"></i></a>
-                </h4>
-                <p>
-                    {{ descripcionNote}}
-                </p>
-                <form action="/notes/delete/{{id}}?_method=DELETE" method="POST">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button type="submit" class="btn btn-warning btn-block btn-sm">Eliminar</button>
-                </form>
+<div class="row" id="listNotes">
+    <!-- Listar las notes -->
+</div>
+
+<!-- Modal de nueva Nota -->
+<div class="modal fade" id="newNote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="" method="POST" enctype="multipart/form-data" id="formNotes">
+            <div class="modal-header">
+                <h5 class="modal-title">Registrar nueva Nota</h5>
+                <button type="button" class="close" id="btn-cerrarModalNewNote" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="tituloNote" id="tituloNote" placeholder="Ingrese un título">
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" name="descripcionNote" id="descripcionNote" rows="3"
+                        placeholder="Ingrese una descripción"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="btn-newNote" class="btn btn-primary btn-block">Guardar</button>
+
+            </div>
+            </form>
         </div>
     </div>
-    {{else}}
-    <div class="card mx-auto">
-        <div class="card-body">
-            <p class="lead"> No hay notas aún.</p>
-            <a href="/notes/add" class="btn btn-success btn-block">Nueva nota</a>
+</div>
+
+<!-- Modal de editar nota -->
+<div class="modal fade" id="editNote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="" method="POST" enctype="multipart/form-data" id="formEditNote">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="idNote" id="idNote">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Nota</h5>
+                <button type="button" class="close" id="btn-cerrarModalEditNote" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="editTituloNote" id="editTituloNote" placeholder="Ingrese un título">
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" name="editDescripcionNote" id="editDescripcionNote" rows="3"
+                        placeholder="Ingrese una descripción"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="btn-editNote" class="btn btn-primary btn-block">Guardar Cambios</button>
+            </div>
+            </form>
         </div>
     </div>
-    {{/each}}
 </div>

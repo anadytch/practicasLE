@@ -1,78 +1,15 @@
 $(function(){
-    //agregar el nombre del archivo en el input
+    //mostrar el nombre de archivo a subir
     $(".custom-file-input").on("change", function() {
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 
-    //previsualizar una imagen
+    //previsualizar las imagenes
     $('#customFile').change(function(){
         filePreview(this);
     });
-
-    //listar un informe
-/*    $(document).ready(function() {
-        $.ajax({
-            url: '/listar',
-            success: function(informes){
-                let tbody = $('#tbodyInformePersonal');
-                let i = 0;
-                tbody.html('');
-                informes.forEach(informes => {
-                    i=i+1;
-                    tbody.append(`
-                        <tr>
-                            <th>${i}</th>
-                            <th>${informes.tituloInforme}</th>
-                            <th>${informes.numInforme}</th>
-                            <th>${informes.descripcionInforme}</th>
-                            <th>${informes.createdAt}</th>
-                            <th>
-                                <div class="btn-group btn-group-sm">
-                                    <form action="#" method="POST">
-                                        <button type="submit" class="btn btn-danger btn-sm"><i
-                                                class="fas fa-trash-alt"></i></button>
-                                    </form>
-                                    <a href="#" class="btn btn-info" role="button"><i class="fas fa-edit"></i></a>
-                                </div>
-                            </th>
-                        </tr>                    
-                    `);
-                });
-            }
-        })
-    })*/
-    $.ajax({
-        url: '/listar',
-        success: function(informes){
-            let tbody = $('#tbodyInformePersonal');
-            let i = 0;
-            tbody.html('');
-            informes.forEach(informes => {
-                i=i+1;
-                tbody.append(`
-                    <tr>
-                        <th>${i}</th>
-                        <th>${informes.tituloInforme}</th>
-                        <th>${informes.numInforme}</th>
-                        <th>${informes.descripcionInforme}</th>
-                        <th>${informes.createdAt}</th>
-                        <th>
-                            <div class="btn-group btn-group-sm">
-                                <form action="#" method="POST">
-                                    <button type="submit" class="btn btn-danger btn-sm"><i
-                                            class="fas fa-trash-alt"></i></button>
-                                </form>
-                                <a href="#" class="btn btn-info" role="button"><i class="fas fa-edit"></i></a>
-                            </div>
-                        </th>
-                    </tr>                    
-                `);
-            });
-        }
-    })
-});
-
+})
 
 function filePreview(input){
     if(input.files && input.files[0]){

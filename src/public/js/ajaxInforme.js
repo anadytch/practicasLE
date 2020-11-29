@@ -1,37 +1,22 @@
 $(function () {
 
-    // (MOSTRAR NOMBRE DEL ARCHIVO) mostrar el nombre de archivo a subir
-    $(".custom-file-input").on("change", function() {
-        var fileName = $(this).val().split("\\").pop();
-        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    $('.tableinforme_DataTables').DataTable({
+        "ajax": {
+            "url": "legendary/src/public/js/ajaxListarInforme.js",
+            "dataSrc": ""
+        }
     });
+    
+    // (LISTAR DE UN USUARIO) listar los informes personales
+    //listarInformes(); 
 
     // (VALIDAR) validar campos del informe
     $("#btn-newInforme").click(function () {
-        validarForm()
+        validarFormNewInforme();
     });
 
     $("#btn-editInforme").click(function () {
-        if ($('#editTituloInforme').val() == "") {
-            $("#editTituloInforme").focus();
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: '¡El campo titulo no puede estar vacio!'
-            })
-            
-            return false;
-        }
-        if (!$('#editDescripcionInforme').val()) {
-            $("#editDescripcionInforme").focus();
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: '¡El campo descripcion no puede estar vacio!'
-            })
-            return false;
-        }
-        return true;
+        validarFormEditInforme();
     });
 
     // (LOAD) cargar datos un informe
@@ -51,37 +36,6 @@ $(function () {
             }
         })
     })
-
-    // (LISTAR DE UN USUARIO) listar los informes personales
-    listarInformes();
-    function listarInformes() {
-        $.ajax({
-            url: '/informe/listPersonal/list',
-            success: function (data) {
-                var valor = '';
-                let i = 0;
-                console.log(data);
-                data.forEach(documents => {
-                    i++;
-                    valor += "<tr>" +
-                        "<td>" + i + "</td>" +
-                        "<td>" + documents.tituloInforme + "</td>" +
-                        "<td>" + documents.numInforme + "</td>" +
-                        "<td>" + documents.descripcionInforme + "</td>" +
-                        "<td>" + documents.createdAt + "</td>" +
-                        "<td>" +
-                        "<div class='btn-group btn-group-sm'>" +
-                        "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
-                        "<button class='btn btn-info btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
-                        "</div>" +
-                        "</td>" +
-                        "<tr>";
-                })
-                $('#tbodyInforme').html(valor);
-
-            }
-        });
-    }
 
     // (DELETE) eliminar un informe
     $('table').on('click', '.btn-deleteInforme', function (event) {
@@ -117,8 +71,36 @@ $(function () {
     })
 })
 
+function listarInformes() {
+    $.ajax({
+        url: '/informe/listPersonal/list',
+        success: function (data) {
+            var valor = '';
+            let i = 0;
+            data.forEach(documents => {
+                i++;
+                valor += "<tr>" +
+                    "<td>" + i + "</td>" +
+                    "<td>" + documents.tituloInforme + "</td>" +
+                    "<td>" + documents.numInforme + "</td>" +
+                    "<td>" + documents.descripcionInforme + "</td>" +
+                    "<td>" + documents.createdAt + "</td>" +
+                    "<td>" +
+                    "<div class='btn-group btn-group-sm'>" +
+                    "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
+                    "<button class='btn btn-info btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
+                    "</div>" +
+                    "</td>" +
+                    "<tr>";
+            })
+            $('#tbodyInforme').html(valor);
+
+        }
+    });
+}  
+
 // (FUNCTION DE VALIDAR) validar el formulario de infUserList.hbs
-function validarForm() {
+function validarFormNewInforme() {
     if ($('#tituloInforme').val() == "") {
         $("#tituloInforme").focus();
         Swal.fire({
@@ -143,6 +125,29 @@ function validarForm() {
             icon: 'error',
             title: 'Oops...',
             text: '¡Suba su informe!'
+        })
+        return false;
+    }
+    return true;
+}
+
+function validarFormEditInforme(){
+    if ($('#editTituloInforme').val() == "") {
+        $("#editTituloInforme").focus();
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡El campo titulo no puede estar vacio!'
+        })
+        
+        return false;
+    }
+    if (!$('#editDescripcionInforme').val()) {
+        $("#editDescripcionInforme").focus();
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡El campo descripcion no puede estar vacio!'
         })
         return false;
     }

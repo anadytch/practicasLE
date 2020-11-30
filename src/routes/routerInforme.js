@@ -50,7 +50,7 @@ router.get('/informe/listPersonal/list', listInformePersonal);
 //eliminar informe personales (AJAX)
 router.delete('/informe/delete:id', deleteInforme);
 
-//Cargar los datos para editar
+//Cargar los datos para editar (AJAX)
 router.get('/informe/edit:id', loadInforme);
 
 module.exports = router;

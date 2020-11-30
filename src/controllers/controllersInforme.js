@@ -131,50 +131,7 @@ controllersInforme.uploadInforme = async (req, res) => {
 
 /*=============== AJAX ===============*/
 
-// nuevo informe
-controllersInforme.nuevoInforme = async (req, res) => {
-/*    const {numInforme, tituloInforme, descripcionInforme} = req.body();
-    const newInforme = new modelsInforme({
-        numInforme,
-        tituloInforme,
-        descripcionInforme,
-        estadoInforme,
-        rutaInforme,
-        userInforme : req.user.id
-    });
-    await newInforme.save();
-    */
-   console.log(req.body);
-   console.log(req.file);
-}
-
-//listar en TABLE los informes personales (AJAX)
-/*controllersInforme.listInformePersonal = async (req, res) => {
-    const documentsInforme = await modelsInforme.find();
-    res.json(documentsInforme);
-}*/
-
-controllersInforme.listInformePersonal = async (req, res) => {
-    const documentsInforme = await modelsInforme.find();
-    var valor = '';
-    var botones = "";
-    let i = 0;
-    valor += '{"data": [';
-    documentsInforme.forEach(documents => {
-        i++;
-        botones = "<div class='btn-group btn-group-sm'>" +
-        "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
-        "<button class='btn btn-info btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
-        "</div>";
-
-        valor +='[ "' + i + '","' + documents.tituloInforme + '","' + documents.numInforme + '","' + documents.descripcionInforme + '","' + documents.createdAt + '","' + botones + '" ],';
-    })
-    valor = valor.substring(0, valor.length - 1);
-    valor += ']}';
-    res.json(valor);
-}
-
-//eliminar un registro con su documento de la TABLE del informe personal (AJAX)
+//(DELETE) eliminar un registro con su documento de la TABLE del informe personal - AJAX
 controllersInforme.deleteInforme = async (req, res) => {
     const deleteInforme = await modelsInforme.findByIdAndDelete(req.params.id);
     if(deleteInforme.estadoInforme){
@@ -183,15 +140,34 @@ controllersInforme.deleteInforme = async (req, res) => {
     res.json('Se elimino correctamente el archivo');
 }
 
-//Cargar datos del informe para poder editar
+//(LOAD) Cargar datos del informe para poder editar - AJAX
 controllersInforme.loadInforme = async (req, res) => {
     const documentsInforme = await modelsInforme.findById(req.params.id);
     res.json(documentsInforme);
 }
 
-controllersInforme.listarInforme = async (req, res) => {
+//(LISTA PERSONAL) listar los informes de un solo personal en especifico - AJAX
+controllersInforme.listInformePersonal = async (req, res) => {
+    let i = 0;
+    let datos = [];
     const documentsInforme = await modelsInforme.find({userInforme: req.user.id});
-    res.json(documentsInforme);
+    //datos += '{"data": [';
+    documentsInforme.forEach( documents => {
+        i++;
+        botones = "<div class='btn-group btn-group-sm'>" +
+        "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
+        "<button class='btn btn-info btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
+        "</div>";
+        datos.push({
+            i: i,
+            titulo: documents.tituloInforme,
+            numero: documents.numInforme,
+            descripcion: documents.descripcionInforme,
+            fecha: documents.createdAt,
+            botones: botones
+        })
+    })
+    res.json(datos);
 }
 
 module.exports = controllersInforme;

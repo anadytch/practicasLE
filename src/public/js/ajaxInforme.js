@@ -1,14 +1,20 @@
 $(function () {
-
+    // (LISTAR DE UN USUARIO) listar los informes personales
     $('.tableinforme_DataTables').DataTable({
         "ajax": {
-            "url": "legendary/src/public/js/ajaxListarInforme.js",
-            "dataSrc": ""
-        }
+            "url": "/informe/listPersonal/list",
+            "dataSrc": "",
+            "type": "GET",
+        },
+        "columns": [
+            { "data": "i" },
+            { "data": "titulo" },
+            { "data": "numero" },
+            { "data": "descripcion" },
+            { "data": "fecha" },
+            { "data": "botones" }
+        ]
     });
-    
-    // (LISTAR DE UN USUARIO) listar los informes personales
-    //listarInformes(); 
 
     // (VALIDAR) validar campos del informe
     $("#btn-newInforme").click(function () {
@@ -62,7 +68,7 @@ $(function () {
                             data,
                             'success'
                         )
-                        listarInformes();
+                        //para cargar la lista de informes
                     }
                 })
                 
@@ -70,34 +76,6 @@ $(function () {
         })
     })
 })
-
-function listarInformes() {
-    $.ajax({
-        url: '/informe/listPersonal/list',
-        success: function (data) {
-            var valor = '';
-            let i = 0;
-            data.forEach(documents => {
-                i++;
-                valor += "<tr>" +
-                    "<td>" + i + "</td>" +
-                    "<td>" + documents.tituloInforme + "</td>" +
-                    "<td>" + documents.numInforme + "</td>" +
-                    "<td>" + documents.descripcionInforme + "</td>" +
-                    "<td>" + documents.createdAt + "</td>" +
-                    "<td>" +
-                    "<div class='btn-group btn-group-sm'>" +
-                    "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
-                    "<button class='btn btn-info btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
-                    "</div>" +
-                    "</td>" +
-                    "<tr>";
-            })
-            $('#tbodyInforme').html(valor);
-
-        }
-    });
-}  
 
 // (FUNCTION DE VALIDAR) validar el formulario de infUserList.hbs
 function validarFormNewInforme() {

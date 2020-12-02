@@ -16,9 +16,6 @@ const { isAuthenticated } = require('../helpers/validation');
 //Mostrar el modulo Area
 router.get('/areas/list', isAuthenticated, renderAreasForm);
 
-//estado areas
-router.get('/areas/status/:id', isAuthenticated, statusAreas);
-
 /*=============== AJAX ===============*/
 //(LIST) listar areas - AJAX
 router.get('/areas/listar', listAreas);
@@ -34,5 +31,8 @@ router.get('/areas/load/:id', loadAreas);
 
 //(UPDATE) editar area
 router.put('/areas/edit/:id', isAuthenticated, updateAreas);
+
+//(STATUS) estado areas
+router.post('/areas/status/:id', isAuthenticated, statusAreas);
 
 module.exports = router;

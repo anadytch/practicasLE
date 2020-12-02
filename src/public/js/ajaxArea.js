@@ -108,6 +108,19 @@ $(function () {
             });
         }
     })
+
+    // (STATUS) cambiar el estado del area
+    $('table').on('click', '.btn-statusArea', function (event) {
+        event.preventDefault();
+        let id = $(this).attr('idArea');
+        $.ajax({
+            url: '/areas/status/' + id,
+            method: 'POST',
+            success: function (response) {
+                listarAreas();
+            }
+        })
+    })
     
 })  //fin
 
@@ -123,6 +136,7 @@ function listarAreas(){
             { "data": "i" },
             { "data": "titulo" },
             { "data": "descripcion" },
+            { "data": "estado" },
             { "data": "botones" }
         ],
         "language": {

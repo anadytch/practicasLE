@@ -9,3 +9,8 @@
 .logo {
     width: 50%;
 }
+
+table th {
+    background-color: #2fa4e7 ! important;
+    color: white;
+}

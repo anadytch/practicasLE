@@ -65,7 +65,7 @@ $(function () {
 
 //(FUNCTION LISTAR) 
 function listarInformes(){
-    $('.tableinforme_DataTables').DataTable({
+    $('.tableInforme_DataTables').DataTable({
         "destroy": true,
         "ajax": {
             "url": "/informe/listPersonal/list",

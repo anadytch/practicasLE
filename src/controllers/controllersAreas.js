@@ -4,86 +4,7 @@ const modelsUsers = require('../models/modelsUsers');
 
 //Listar areas
 controllersAreas.renderAreasForm = async (req, res) => {
-    const documents = await modelsAreas.find();
-    var i = 1;
-    let collections = [];
-    documents.forEach( async (documents) => {
-        var numeroIntegrantes = await modelsUsers.count({areaUser: documents.tituloArea});
-        collections.push({
-            i: i++,
-            id: documents._id,
-            titulo: documents.tituloArea,
-            descripcion: documents.descripcionArea,
-            integrantes: numeroIntegrantes,
-            estado: documents.estadoArea
-        })
-    })
-    res.render('areas/areaList', {area : collections});
-};
-
-//Registrar area
-controllersAreas.createAreasNew = async (req, res) => {
-    const {tituloArea, descripcionArea} = req.body;
-    const errors = [];
-    if(!tituloArea){
-        errors.push({text: 'Porfavor ingrese un título.'});
-    }
-    if(!descripcionArea){
-        errors.push({text: 'Porfavor ingrese una descripcion.'});
-    }
-    if(errors.length > 0){
-        res.render('areas/areaList', {
-            errors,
-            tituloArea,
-            descripcionArea
-        });
-    }else{
-        const newArea = new modelsAreas({tituloArea, descripcionArea});
-        await newArea.save();   //metodo para guardar el document en el DB
-        req.flash('success_msj', 'Area agregada con exito');
-        res.redirect('/areas/list');
-    }
-};
-
-//cargar los datos para editar el area seleccionado
-controllersAreas.renderAreasEdit = async (req, res) => {
-    const documents = await modelsAreas.findById(req.params.id);
-    res.render('areas/areaEdit', {
-        id: documents._id,
-        tituloArea: documents.tituloArea,
-        descripcionArea: documents.descripcionArea
-    });
-};
-
-//editar area
-controllersAreas.updateAreas = async (req, res) => {
-    const {idArea, tituloArea, descripcionArea} = req.body;
-    const errors = [];
-    if(!tituloArea){
-        errors.push({text: 'Porfavor ingrese un título.'});
-    }
-    if(!descripcionArea){
-        errors.push({text: 'Porfavor ingrese una descripcion.'});
-    }
-    if(errors.length > 0){
-        res.render('areas/areaEdit', {
-            errors,
-            id: idArea,
-            tituloArea,
-            descripcionArea
-        });
-    }else{
-        await modelsAreas.findByIdAndUpdate(req.params.id, {tituloArea, descripcionArea});
-        req.flash('success_msj', 'Area actualizada con exito');
-        res.redirect('/areas/list');
-    }
-};
-
-//Eliminar area
-controllersAreas.deleteAreas = async (req, res) => {
-    await modelsAreas.findByIdAndDelete(req.params.id);
-    req.flash('success_msj', 'Área eliminado con exito');
-    res.redirect('/areas/list');
+    res.render('areas/areaList');
 };
 
 //Estado del area
@@ -93,5 +14,62 @@ controllersAreas.statusAreas = async (req, res) => {
     await documents.save();
     res.redirect('/areas/list');
 };
+
+/*=============== AJAX ===============*/
+
+//(LISTAR) listar las areas - AJAX
+controllersAreas.listAreas = async (req, res) => {
+    let i = 1;
+    let datos = [];
+
+    const documentsArea = await modelsAreas.find();
+    documentsArea.forEach(documents => {
+        let botones = "<div class='btn-group btn-group-sm'>" +
+        "<button class='btn btn-dark btn-sm btn-statusArea' idArea='" + documents._id + "'><i class='fas fa-times'></i></button>" +
+        "<button class='btn btn-danger btn-sm btn-deleteArea' idArea='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
+        "<button class='btn btn-info btn-sm btn-loadArea' idArea='" + documents._id + "' data-toggle='modal' data-target='#editArea'><i class='fas fa-edit'></i></button>" +
+        "</div>";
+        datos.push({
+            i: i++,
+            titulo: documents.tituloArea,
+            descripcion: documents.descripcionArea,
+            botones: botones
+        })
+    })
+    res.json(datos);
+}
+
+//(NEW) guardar un nuevo area - AJAX
+controllersAreas.createAreas = async (req, res) => {
+    const {tituloArea, descripcionArea} = req.body;
+    const newArea = new modelsAreas({
+        tituloArea,
+        descripcionArea
+    });
+    await newArea.save();
+    res.json(newArea);
+}
+
+//(DELETE) Eliminar un registro - AJAX
+controllersAreas.deleteAreas = async (req, res) => {
+    await modelsAreas.findByIdAndDelete(req.params.id);
+    res.json('Se elimino correctamente el registro');
+};
+
+//(LOAD) cargar los datos de un area - AJAX
+controllersAreas.loadAreas = async (req, res) => {
+    const documentsArea = await modelsAreas.findById(req.params.id);
+    res.json(documentsArea);
+}
+
+//(UPDATE) actualizar un area - AJAX
+controllersAreas.updateAreas = async (req, res) => {
+    const {idArea, tituloArea, descripcionArea} = req.body;
+    const updateArea = await modelsAreas.findByIdAndUpdate(idArea, {
+        tituloArea,
+        descripcionArea
+    });
+    res.json(updateArea);
+}
 
 module.exports = controllersAreas;

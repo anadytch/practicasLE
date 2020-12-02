@@ -151,7 +151,6 @@ controllersInforme.listInformePersonal = async (req, res) => {
     let i = 0;
     let datos = [];
     const documentsInforme = await modelsInforme.find({userInforme: req.user.id});
-    //datos += '{"data": [';
     documentsInforme.forEach( documents => {
         i++;
         botones = "<div class='btn-group btn-group-sm'>" +

@@ -207,16 +207,6 @@ controllersUsers.updateUser = async (req, res) => {
     }
 };
 
-//para eliminar un usuario
-controllersUsers.deleteUsers = async (req, res) => {
-    const deleteUser = await modelsUsers.findByIdAndDelete(req.params.id);
-    if(deleteUser.imageUser){
-        unlink(path.resolve('./src/public' + deleteUser.rutaImgUser));
-    }
-    req.flash('success_msj', 'El usuario se elimino correstamente');
-    res.redirect('/users/list');
-};
-
 //para editar el estado de los usuarios
 controllersUsers.statusUsers = async (req, res) => {
     const documents = await modelsUsers.findById(req.params.id);
@@ -226,7 +216,6 @@ controllersUsers.statusUsers = async (req, res) => {
 };
 
 /*=============== AJAX ===============*/
-
 //(LIST) listar a todos los users - AJAX
 controllersUsers.listUsers = async (req, res) => {
     let i = 1;
@@ -244,6 +233,7 @@ controllersUsers.listUsers = async (req, res) => {
         "<button class='btn btn-success btn-sm btn-statusUser' idUser='" + documents._id + "'><i class='fas fa-check'></i></button>" +
         "<button class='btn btn-danger btn-sm btn-deleteUser' idUser='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
         "<button class='btn btn-primary btn-sm btn-loadUser' idUser='" + documents._id + "' data-toggle='modal' data-target='#editUser'><i class='fas fa-edit'></i></button>" +
+        "<a href='' class='btn btn-info btn-sm btn-deleteUser' idUser='" + documents._id + "'><i class='fas fa-info'></i></a>" +
         "</div>";
 
         datos.push({
@@ -257,6 +247,15 @@ controllersUsers.listUsers = async (req, res) => {
         })
     })
     res.json(datos);
+}
+
+//(DELETE) eliminar el registro
+controllersUsers.deleteUsers = async (req, res) => {
+    const deleteUser = await modelsUsers.findByIdAndDelete(req.params.id);
+    if(deleteUser.imageUser){
+        unlink(path.resolve('./src/public' + deleteUser.rutaImgUser));
+    }
+    res.json('Se elimino correctamente al usuario');
 }
 
 module.exports = controllersUsers;

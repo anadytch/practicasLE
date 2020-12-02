@@ -1,6 +1,39 @@
 $(function () {
     //(LISTAR) listar a los users
     listarUsers();
+
+    // (DELETE) eliminar un area
+    $('table').on('click', '.btn-deleteUser', function (event) {
+        event.preventDefault();
+        let id = $(this).attr('idUser');
+        
+        Swal.fire({
+            title: '¿Estas Seguro?',
+            text: "¡Estas seguro que deseas eliminar este usuario!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Si, bórralo!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $.ajax({
+                    url: '/users/delete/' + id,
+                    method: 'DELETE',
+                    success: function (data) {
+                        Swal.fire(
+                            'Eliminado!',
+                            data,
+                            'success'
+                        )
+                        listarUsers();
+                    }
+                })
+            }
+        })
+    })
+
 })
 
 //(FUNCTION LISTAR)

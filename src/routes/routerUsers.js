@@ -66,14 +66,14 @@ router.get('/users/listPersonal/:id', isAuthenticated, renderUsersPersonal);
 //editar usuario
 router.put('/users/edit/:id', isAuthenticated, upload, updateUser);
 
-//eliminar usuario
-router.delete('/users/delete/:id', isAuthenticated, deleteUsers);
-
 //cambiar estado del usuario
 router.get('/users/status/:id', isAuthenticated, statusUsers);
 
 /*=============== AJAX ===============*/
 //(LIST) listar user - AJAX
 router.get('/users/listar', isAuthenticated, listUsers);
+
+//(DELETE) eliminar usuario - AJAX
+router.delete('/users/delete/:id', isAuthenticated, deleteUsers);
 
 module.exports = router;

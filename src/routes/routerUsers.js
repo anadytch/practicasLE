@@ -39,7 +39,8 @@ const {
     renderUsersPersonal,
     updateUser,
     deleteUsers,
-    statusUsers
+    statusUsers,
+    listUsers
 } = require('../controllers/controllersUsers');
 
 // para validar la sesion 
@@ -70,5 +71,9 @@ router.delete('/users/delete/:id', isAuthenticated, deleteUsers);
 
 //cambiar estado del usuario
 router.get('/users/status/:id', isAuthenticated, statusUsers);
+
+/*=============== AJAX ===============*/
+//(LIST) listar user - AJAX
+router.get('/users/listar', isAuthenticated, listUsers);
 
 module.exports = router;

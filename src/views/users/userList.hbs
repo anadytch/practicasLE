@@ -7,43 +7,32 @@
     </div>
 </div>
 <hr class="my-4 bg-secondary">
-<table class="table table-striped table-hover table-sm">
-    <thead class="thead-dark">
+<table class="table table-striped table-hover table-sm responsive tableUser_DataTables">
+    <thead>
         <tr>
             <th>N°</th>
             <th>DNI.</th>
             <th>Nombre y apellidos</th>
             <th>Area</th>
             <th>Perfil</th>
-            <th>N° de inf.</th>
             <th>Ultimo login</th>
             <th>Acción</th>
         </tr>
     </thead>
     <tbody>
-        {{#each users}}
-        <tr>
-            <th> {{i}} </th>
-            <th>{{dni}}</th>
-            <th>{{nombre}}</th>
-            <th>{{area}}</th>
-            <th>{{perfil}}</th>
-            <th>11</th>
-            <th>{{ultimoLogin}}</th>
-            <th>
-                <div class="btn-group btn-group-sm">
-                    <a href="/users/status/{{id}}" class="btn {{#if estado}} btn-success {{else}} btn-dark {{/if}}" role="button">
-                    <i class="fas {{#if estado}} fa-check {{else}} fa-times {{/if}}"></i></a>
-                    <form action="/users/delete/{{id}}?_method=DELETE" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
-                    </form>
-                    <a href="/users/listPersonal/{{id}}" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                </div>
-            </th>
-        </tr>
-        {{/each}}
+        <!-- listar a los users desde ajaxUser.js -->
     </tbody>
+    <tfoot>
+        <tr>
+            <th>N°</th>
+            <th>DNI.</th>
+            <th>Nombre y apellidos</th>
+            <th>Area</th>
+            <th>Perfil</th>
+            <th>Ultimo login</th>
+            <th>Acción</th>
+        </tr>
+    </tfoot>
 </table>
 
 <!-- Modal -->

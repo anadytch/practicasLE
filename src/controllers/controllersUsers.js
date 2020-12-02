@@ -98,30 +98,7 @@ controllersUsers.logout = (req, res) => {
 
 //listar los informes de todo el personal
 controllersUsers.renderUsersList = async (req, res) => {
-    var i = 1;
-    var perfilUsuario = true;
-    let collections = [];
-    
-    const documents = await modelsUsers.find();
-    const documentsArea = await modelsAreas.find({estadoArea: true});
-    documents.forEach((documents) => {
-        if (documents.perfilUser) {
-            perfilUsuario = 'Administrador';
-        }else{
-            perfilUsuario = 'Usuario';
-        } 
-        collections.push({
-            i: i++,
-            id: documents._id,
-            dni: documents.dniUser,
-            nombre: documents.nombreUser,
-            area: documents.areaUser,
-            perfil: perfilUsuario,
-            estado: documents.estadoUser,
-            ultimoLogin: documents.updatedAt.toISOString().substring(0,10) + ' ' + documents.updatedAt.toISOString().substring(12,19)
-        })
-    });
-    res.render('users/userList', { users : collections , area : documentsArea});
+    res.render('users/userList');
 };
 
 //listar informes personales, cargar datos para editar y listar informes del usuario
@@ -247,5 +224,39 @@ controllersUsers.statusUsers = async (req, res) => {
     await documents.save();
     res.redirect('/users/list');
 };
+
+/*=============== AJAX ===============*/
+
+//(LIST) listar a todos los users - AJAX
+controllersUsers.listUsers = async (req, res) => {
+    let i = 1;
+    let datos = [];
+    var perfilUsuario = '';
+
+    const documentsUsers = await modelsUsers.find();
+    documentsUsers.forEach( documents => {
+        if (documents.perfilUser) {
+            perfilUsuario = 'Administrador';
+        }else{
+            perfilUsuario = 'Usuario';
+        }
+        botones = "<div class='btn-group btn-group-sm'>" +
+        "<button class='btn btn-success btn-sm btn-statusUser' idUser='" + documents._id + "'><i class='fas fa-check'></i></button>" +
+        "<button class='btn btn-danger btn-sm btn-deleteUser' idUser='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
+        "<button class='btn btn-primary btn-sm btn-loadUser' idUser='" + documents._id + "' data-toggle='modal' data-target='#editUser'><i class='fas fa-edit'></i></button>" +
+        "</div>";
+
+        datos.push({
+            i: i++,
+            dni: documents.dniUser,
+            nombre: documents.nombreUser,
+            area: documents.areaUser,
+            perfil: perfilUsuario,
+            fecha: documents.updatedAt.toISOString().substring(0,10) + ' ' + documents.updatedAt.toISOString().substring(12,19),
+            botones: botones
+        })
+    })
+    res.json(datos);
+}
 
 module.exports = controllersUsers;

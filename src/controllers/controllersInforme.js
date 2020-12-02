@@ -8,7 +8,8 @@ const modelsUsers = require('../models/modelsUsers');
 //listar los informes de cada personal
 controllersInforme.renderInformeListPersonal = async (req, res) => {
     var num = new Date();
-    res.render('informes/infUserList', { numInforme: num.toISOString().substring(8,10)});
+    var numInforme = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
+    res.render('informes/infUserList', { numInforme: numInforme});
 };
 
 //listar todos los informes
@@ -66,7 +67,7 @@ controllersInforme.createInforme = async (req, res) => {
             descripcionInforme
         });
     }else{
-        const informePresentado = false;//await modelsInforme.findOne({numInforme: numInforme, userInforme: req.user.id});
+        const informePresentado = await modelsInforme.findOne({numInforme: numInforme, userInforme: req.user.id});
         if(informePresentado){
             req.flash('error_msj', 'Ya presento su informe del dia');
             res.redirect('/informe/listPersonal');
@@ -130,6 +131,13 @@ controllersInforme.uploadInforme = async (req, res) => {
 };
 
 /*=============== AJAX ===============*/
+//mostrar el informe del dia
+controllersInforme.informeDia = async (req, res) => {
+    var num = new Date();
+    var numInforme = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
+    const informePresentado = await modelsInforme.findOne({numInforme: numInforme, userInforme: req.user.id});
+    res.json(informePresentado);
+}
 
 //(DELETE) eliminar un registro con su documento de la TABLE del informe personal - AJAX
 controllersInforme.deleteInforme = async (req, res) => {
@@ -155,7 +163,7 @@ controllersInforme.listInformePersonal = async (req, res) => {
         i++;
         botones = "<div class='btn-group btn-group-sm'>" +
         "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
-        "<button class='btn btn-info btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
+        "<button class='btn btn-primary btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
         "</div>";
         datos.push({
             i: i,

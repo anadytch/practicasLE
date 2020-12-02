@@ -10,7 +10,7 @@
 <div class="row">
     <div class="col-md-12">
         <table class="table table-striped table-hover table-sm table-active responsive tableArea_DataTables">
-            <caption>Areas Habilitadas <span class="badge badge-pill badge-primary">{{habilitados}}</span> </caption>
+            <caption>Areas Habilitadas <span id="textAreasHabilitadas" class="badge badge-pill badge-primary"></span> </caption>
             <thead>
                 <tr>
                     <th>N°</th>
@@ -38,7 +38,7 @@
 
 <!-- Modal nuevo -->
 <div class="modal fade" id="nuevoArea" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form action="" method="POST" id="formArea">
             <div class="modal-header">
@@ -65,7 +65,7 @@
 
 <!-- Modal editar -->
 <div class="modal fade" id="editArea" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form action="" method="POST" id="formEditArea">
             <input type="hidden" name="_method" value="PUT">

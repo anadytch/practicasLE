@@ -5,11 +5,15 @@ const modelsUsers = require('../models/modelsUsers');
 
 //Mostrar interfaz del modulo Area
 controllersAreas.renderAreasForm = async (req, res) => {
-    const habilitados = await modelsAreas.count({estadoArea: true});
-    res.render('areas/areaList', {habilitados});
+    res.render('areas/areaList');
 };
 
 /*=============== AJAX ===============*/
+//(MOSTAR DETALLES) mostrar la cantidad de areas habilitadas
+controllersAreas.areasHabilitadas = async (req, res) => {
+    const habilitados = await modelsAreas.count({estadoArea: true});
+    res.json(habilitados);
+}
 
 //(LISTAR) listar las areas - AJAX
 controllersAreas.listAreas = async (req, res) => {

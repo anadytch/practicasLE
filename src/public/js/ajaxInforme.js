@@ -1,6 +1,7 @@
 $(function () {
     // (LISTAR DE UN USUARIO) listar los informes personales
     listarInformes();
+    informePresentado();
 
     // (VALIDAR) validar campos del informe
     $("#btn-newInforme").click(function () {
@@ -55,6 +56,7 @@ $(function () {
                             'success'
                         )
                         listarInformes();
+                        informePresentado();
                     }
                 })
                 
@@ -62,6 +64,30 @@ $(function () {
         })
     })
 })
+
+function informePresentado(){
+    $.ajax({
+        url: '/informe/informeDia',
+        method: 'GET',
+        success: function (response) {
+            if(response){
+                $('#textInformeDia').html('Presentado');
+                $('#textInformeDia').addClass("badge-primary");
+                $('#textInformeDia').removeClass("badge-danger");
+                $('#btn-NuevoInforme').attr('disabled','disabled');
+                $('#btn-NuevoInforme').addClass('btn-warning');
+                $('#btn-NuevoInforme').removeClass('btn-primary');
+            }else{
+                $('#textInformeDia').html('No presentado');
+                $('#textInformeDia').addClass("badge-danger");
+                $('#textInformeDia').removeClass("badge-primary");
+                $('#btn-NuevoInforme').removeAttr('disabled');
+                $('#btn-NuevoInforme').addClass('btn-primary');
+                $('#btn-NuevoInforme').removeClass('btn-warning');
+            }
+        }
+    })
+}
 
 //(FUNCTION LISTAR) 
 function listarInformes(){

@@ -1,6 +1,7 @@
 $(function () {
     // (LISTAR) listar las areas habilitadas y deshabilitadas
     listarAreas();
+    areasHabilitadas();
 
     //(NEW) guardar una nueva area
     $('#formArea').on('submit', function (event) {
@@ -19,6 +20,7 @@ $(function () {
                     tituloArea.val('');
                     descripcionArea.val('');
                     listarAreas();
+                    areasHabilitadas();
                     $('#btn-cerrarModalNewArea').click();
                     Swal.fire(
                         'Guardado!',
@@ -56,6 +58,7 @@ $(function () {
                             'success'
                         )
                         listarAreas();
+                        areasHabilitadas();
                     }
                 })
             }
@@ -98,6 +101,7 @@ $(function () {
                     tituloArea.val('');
                     descripcionArea.val('');
                     listarAreas();
+                    areasHabilitadas();
                     $('#btn-cerrarModalEditArea').click();
                     Swal.fire(
                         'Actualizado!',
@@ -118,11 +122,22 @@ $(function () {
             method: 'POST',
             success: function (response) {
                 listarAreas();
+                areasHabilitadas();
             }
         })
     })
     
 })  //fin
+
+function areasHabilitadas(){
+    $.ajax({
+        url: '/areas/areasHabilitadas',
+        method: 'GET',
+        success: function (response) {
+            $('#textAreasHabilitadas').html(response);
+        }
+    })
+}
 
 //(FUNCTION LISTAR) 
 function listarAreas(){

@@ -28,7 +28,8 @@ const {
     listInformePersonal,
     deleteInforme,
     loadInforme,
-    uploadInforme
+    uploadInforme,
+    informeDia
 } = require('../controllers/controllersInforme');
 
 //listar los informes de cada personal
@@ -52,5 +53,8 @@ router.delete('/informe/delete:id', deleteInforme);
 
 //Cargar los datos para editar (AJAX)
 router.get('/informe/edit:id', loadInforme);
+
+//Mostrar mensaje del informe del dia - AJAX
+router.get('/informe/informeDia', informeDia);
 
 module.exports = router;

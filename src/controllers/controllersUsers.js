@@ -98,7 +98,8 @@ controllersUsers.logout = (req, res) => {
 
 //listar los informes de todo el personal
 controllersUsers.renderUsersList = async (req, res) => {
-    res.render('users/userList');
+    const documentsArea = await modelsAreas.find({estadoArea: true});
+    res.render('users/userList', {areaList: documentsArea});
 };
 
 //listar informes personales, cargar datos para editar y listar informes del usuario
@@ -221,6 +222,7 @@ controllersUsers.listUsers = async (req, res) => {
     let i = 1;
     let datos = [];
     var perfilUsuario = '';
+    var estadoUsuario = '';
 
     const documentsUsers = await modelsUsers.find();
     documentsUsers.forEach( documents => {
@@ -229,11 +231,15 @@ controllersUsers.listUsers = async (req, res) => {
         }else{
             perfilUsuario = 'Usuario';
         }
+        if(documents.estadoUser) {
+            estadoUsuario = '<span class="badge badge-pill badge-success">Activado</span>';
+        }else{
+            estadoUsuario = '<span class="badge badge-pill badge-warning">Desactivado</span>';
+        }
         botones = "<div class='btn-group btn-group-sm'>" +
-        "<button class='btn btn-success btn-sm btn-statusUser' idUser='" + documents._id + "'><i class='fas fa-check'></i></button>" +
+        "<a href='/users/listPersonal/"+ documents._id +"' class='btn btn-info btn-sm'><i class='fas fa-info'></i></a>" +
         "<button class='btn btn-danger btn-sm btn-deleteUser' idUser='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
-        "<button class='btn btn-primary btn-sm btn-loadUser' idUser='" + documents._id + "' data-toggle='modal' data-target='#editUser'><i class='fas fa-edit'></i></button>" +
-        "<a href='' class='btn btn-info btn-sm btn-deleteUser' idUser='" + documents._id + "'><i class='fas fa-info'></i></a>" +
+        "<button class='btn btn-primary btn-sm btn-loadUser' idUser='" + documents._id + "' data-toggle='modal' data-target='#editUsers'><i class='fas fa-edit'></i></button>" +
         "</div>";
 
         datos.push({
@@ -242,6 +248,7 @@ controllersUsers.listUsers = async (req, res) => {
             nombre: documents.nombreUser,
             area: documents.areaUser,
             perfil: perfilUsuario,
+            estado: estadoUsuario,
             fecha: documents.updatedAt.toISOString().substring(0,10) + ' ' + documents.updatedAt.toISOString().substring(12,19),
             botones: botones
         })
@@ -256,6 +263,11 @@ controllersUsers.deleteUsers = async (req, res) => {
         unlink(path.resolve('./src/public' + deleteUser.rutaImgUser));
     }
     res.json('Se elimino correctamente al usuario');
+}
+
+controllersUsers.loadUsers = async (req, res) => {
+    const documentsUser = await modelsUsers.findById(req.params.id);
+    res.json(documentsUser);
 }
 
 module.exports = controllersUsers;

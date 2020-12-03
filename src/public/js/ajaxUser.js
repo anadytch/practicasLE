@@ -2,6 +2,27 @@ $(function () {
     //(LISTAR) listar a los users
     listarUsers();
 
+    // (LOAD) cargar datos un informe
+    $('table').on('click', '.btn-loadUser', function (event) {
+        event.preventDefault();
+        let id = $(this).attr('idUser');
+        $("#mostrarImagenUser").attr('src','');
+
+        $.ajax({
+            url: '/users/load/' + id,
+            method: 'GET',
+            success: function (documents) {
+                console.log(documents);
+                $("#formEditUser").attr('action','/users/edit/' + documents._id + '?_method=PUT');
+                $("#idUser").val(documents._id);
+                $("#mostrarImagenUser").attr('src',documents.rutaImgUser);
+                $("#editDniUser").val(documents.dniUser);
+                $("#editNombreUser").val(documents.nombreUser);
+                $("#editEmailUser").val(documents.emailUser);
+            }
+        })
+    })
+
     // (DELETE) eliminar un area
     $('table').on('click', '.btn-deleteUser', function (event) {
         event.preventDefault();
@@ -50,6 +71,7 @@ function listarUsers () {
             { "data": "nombre" },
             { "data": "area" },
             { "data": "perfil" },
+            { "data": "estado" },
             { "data": "fecha" },
             { "data": "botones" }
         ],

@@ -38,9 +38,10 @@ const {
     renderUsersList,
     renderUsersPersonal,
     updateUser,
-    deleteUsers,
     statusUsers,
-    listUsers
+    listUsers,
+    loadUsers,
+    deleteUsers
 } = require('../controllers/controllersUsers');
 
 // para validar la sesion 
@@ -48,7 +49,7 @@ const { isAuthenticated } = require('../helpers/validation');
 
 //formulario para registrar usuario
 router.get('/users/signUp', renderSignUpForm);
-router.post('/users/signUp',upload, signUp );
+router.post('/users/signUp', upload, signUp );
 
 //formulario para logear usuario
 router.get('/users/signIn', renderSignInForm);
@@ -75,5 +76,8 @@ router.get('/users/listar', isAuthenticated, listUsers);
 
 //(DELETE) eliminar usuario - AJAX
 router.delete('/users/delete/:id', isAuthenticated, deleteUsers);
+
+//(LOAD) cargar los datos de un usuario - AJAX
+router.get('/users/load/:id', isAuthenticated, loadUsers);
 
 module.exports = router;

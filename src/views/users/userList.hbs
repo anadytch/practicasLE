@@ -15,6 +15,7 @@
             <th>Nombre y apellidos</th>
             <th>Area</th>
             <th>Perfil</th>
+            <th>Estado</th>
             <th>Ultimo login</th>
             <th>Acción</th>
         </tr>
@@ -29,13 +30,14 @@
             <th>Nombre y apellidos</th>
             <th>Area</th>
             <th>Perfil</th>
+            <th>Estado</th>
             <th>Ultimo login</th>
             <th>Acción</th>
         </tr>
     </tfoot>
 </table>
 
-<!-- Modal -->
+<!-- Modal de nuevo usuario -->
 <div class="modal fade" id="nuevoUsers" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -60,11 +62,11 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col">
-                                <input type="text" class="form-control" name="dniUser" placeholder="Ingrese su DNI"
+                                <input type="text" class="form-control" name="dniUser" id="dniUser" placeholder="Ingrese su DNI"
                                     value="{{dniUsers}}">
                             </div>
                             <div class="col">
-                                <select class="custom-select" name="perfilUser">
+                                <select class="custom-select" name="perfilUser" id="perfilUser">
                                     <option selected>Selecciona su perfil</option>
                                     <option value="1">Administrador</option>
                                     <option value="0">Usuario</option>
@@ -73,29 +75,29 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" name="nombreUser"
+                        <input type="text" class="form-control" name="nombreUser" id="nombreUser"
                             placeholder="Ingrese su nombre y apellidos" value="{{nombreUsers}}">
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" name="emailUser"
+                        <input type="text" class="form-control" name="emailUser" id="emailUser"
                             placeholder="Ingrese su usuario" value="{{emailUsers}}">
                     </div>
                     <div class="form-group">
                         <div class="row">
                             <div class="col">
-                                <input type="password" class="form-control" name="passwordUser"
+                                <input type="password" class="form-control" name="passwordUser" id="passwordUser"
                                     placeholder="Ingrese su contraseña" value="{{passwordUser}}">
                             </div>
                             <div class="col">
-                                <input type="password" class="form-control" name="passwordUserConfirm"
+                                <input type="password" class="form-control" name="passwordUserConfirm" id="passwordUserConfirm"
                                     placeholder="Confirme su contraseña">
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <select class="custom-select" name="areaUser">
+                        <select class="custom-select" name="areaUser" id="areaUser">
                             <option selected>Selecciona su área</option>
-                            {{#each area}}
+                            {{#each areaList}}
                             <option value="{{tituloArea}}">{{tituloArea}}</option>
                             {{/each}}
                         </select>
@@ -103,6 +105,79 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de editar usuario-->
+<div class="modal fade" id="editUsers" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="" method="POST" enctype="multipart/form-data" id="formEditUser">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="idUser" id="idUser">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="imagenPrevia">
+                        <img id="mostrarImagenUser" src="" alt="logos de legendary evolution" width="90" height="90"
+                        class="rounded-circle mx-auto d-block mb-3">
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" name="fotoUser">
+                            <label class="custom-file-label" for="customFile">Selecione una imagen de perfil</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" class="form-control" name="editDniUser" id="editDniUser" placeholder="Ingrese su DNI">
+                            </div>
+                            <div class="col">
+                                <select class="custom-select" name="editPerfilUser" id="editPerfilUser">
+                                    <option value="{{perfilBoolean}}" selected>{{perfilNombre}}</option>
+                                    <option value="1">Administrador</option>
+                                    <option value="0">Usuario</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="editNombreUser" id="editNombreUser" placeholder="Ingrese su nombre y apellidos">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="editEmailUser" id="editEmailUser" placeholder="Ingrese su usuario">
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <input type="password" class="form-control" name="editPasswordUser" id="editPasswordUser"
+                                    placeholder="Ingrese nueva contraseña">
+                            </div>
+                            <div class="col">
+                                <input type="password" class="form-control" name="editPasswordUserConfirm" id="editPasswordUserConfirm"
+                                    placeholder="Confirme contraseña">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <select class="custom-select" name="editAreaUser" id="editAreaUser">
+                            <option selected>{{areaUser}}</option>
+                            {{#each areaList}}
+                                <option value="{{tituloArea}}">{{tituloArea}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-block">Guardar Cambios</button>
                 </div>
             </form>
         </div>

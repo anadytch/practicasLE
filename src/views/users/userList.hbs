@@ -142,7 +142,8 @@
                             </div>
                             <div class="col">
                                 <select class="custom-select" name="editPerfilUser" id="editPerfilUser">
-                                    <option value="{{perfilBoolean}}" selected>{{perfilNombre}}</option>
+                                    <!--option value="{{perfilBoolean}}" selected>{{perfilNombre}}</option-->
+                                    <option value="" selected>Seleccione su perfil</option>
                                     <option value="1">Administrador</option>
                                     <option value="0">Usuario</option>
                                 </select>
@@ -169,7 +170,7 @@
                     </div>
                     <div class="form-group">
                         <select class="custom-select" name="editAreaUser" id="editAreaUser">
-                            <option selected>{{areaUser}}</option>
+                            <option selected>Seleccione su area</option>
                             {{#each areaList}}
                                 <option value="{{tituloArea}}">{{tituloArea}}</option>
                             {{/each}}

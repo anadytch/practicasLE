@@ -12,7 +12,7 @@ const modelsAreas = require('../models/modelsAreas');
 //formulario para registrar usuario
 controllersUsers.renderSignUpForm = async (req, res) => {
     const documentsArea = await modelsAreas.find({estadoArea: true});
-    res.render('users/userSignUp', {area : documentsArea});
+    res.render('users/userSignUp', {areaList : documentsArea});
 };
 
 //registrar usuario
@@ -256,7 +256,7 @@ controllersUsers.listUsers = async (req, res) => {
     res.json(datos);
 }
 
-//(DELETE) eliminar el registro
+//(DELETE) eliminar el registro - AJAX
 controllersUsers.deleteUsers = async (req, res) => {
     const deleteUser = await modelsUsers.findByIdAndDelete(req.params.id);
     if(deleteUser.imageUser){
@@ -265,9 +265,26 @@ controllersUsers.deleteUsers = async (req, res) => {
     res.json('Se elimino correctamente al usuario');
 }
 
+//(LOAD) cargar los datos de un usuario - AJAX
 controllersUsers.loadUsers = async (req, res) => {
-    const documentsUser = await modelsUsers.findById(req.params.id);
-    res.json(documentsUser);
+    var datos = [];
+    var perfil = '';
+    const documents = await modelsUsers.findById(req.params.id);
+    if(documents.perfilUser){
+        perfil = '1';
+    }else{
+        perfil = '0';
+    }
+    datos.push({
+        _id: documents._id,
+        rutaImgUser: documents.rutaImgUser,
+        dniUser: documents.dniUser,
+        nombreUser: documents.nombreUser,
+        emailUser: documents.emailUser,
+        perfilBooleano: perfil,
+        areaUser: documents.areaUser
+    })
+    res.json(datos);
 }
 
 module.exports = controllersUsers;

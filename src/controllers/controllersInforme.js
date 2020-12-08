@@ -87,7 +87,7 @@ controllersInforme.createInforme = async (req, res) => {
     }
 }
 
-// (UPLOAD) editar informe
+// (UPDATE) editar informe
 controllersInforme.uploadInforme = async (req, res) => {
     const errors = [];
 

@@ -6,19 +6,21 @@ $(function () {
     $('table').on('click', '.btn-loadUser', function (event) {
         event.preventDefault();
         let id = $(this).attr('idUser');
-        $("#mostrarImagenUser").attr('src','');
 
         $.ajax({
             url: '/users/load/' + id,
             method: 'GET',
             success: function (documents) {
-                console.log(documents);
+                console.log(documents[0].perfilBooleano);
+                console.log(documents[0].areaUser);
                 $("#formEditUser").attr('action','/users/edit/' + documents._id + '?_method=PUT');
-                $("#idUser").val(documents._id);
-                $("#mostrarImagenUser").attr('src',documents.rutaImgUser);
-                $("#editDniUser").val(documents.dniUser);
-                $("#editNombreUser").val(documents.nombreUser);
-                $("#editEmailUser").val(documents.emailUser);
+                $("#idUser").val(documents[0]._id);
+                $("#mostrarImagenUser").attr('src', documents[0].rutaImgUser );
+                $("#editDniUser").val(documents[0].dniUser);
+                $("#editNombreUser").val(documents[0].nombreUser);
+                $("#editEmailUser").val(documents[0].emailUser);
+                $('#editPerfilUser').val(documents[0].perfilBooleano);
+                $('#editAreaUser').val(documents[0].areaUser);
             }
         })
     })

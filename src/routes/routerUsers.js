@@ -41,7 +41,8 @@ const {
     statusUsers,
     listUsers,
     loadUsers,
-    deleteUsers
+    deleteUsers,
+    listUserListInforme
 } = require('../controllers/controllersUsers');
 
 // para validar la sesion 
@@ -79,5 +80,8 @@ router.delete('/users/delete/:id', isAuthenticated, deleteUsers);
 
 //(LOAD) cargar los datos de un usuario - AJAX
 router.get('/users/load/:id', isAuthenticated, loadUsers);
+
+//(LISTAR INFORMES PERSONAL)  listar los informes de un personal - AJAX
+router.get('/users/usersListInforme', isAuthenticated, listUserListInforme);
 
 module.exports = router;

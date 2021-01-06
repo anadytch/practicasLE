@@ -1,6 +1,7 @@
 $(function () {
     // (LISTAR DE UN USUARIO) listar los informes personales
     listarInformes();
+    listarInformesPersonal();
     informePresentado();
 
     // (VALIDAR) validar campos del informe
@@ -90,8 +91,8 @@ function informePresentado(){
 }
 
 //(FUNCTION LISTAR) 
-function listarInformes(){
-    $('.tableInforme_DataTables').DataTable({
+function listarInformesPersonal(){
+    $('.tableInformePersonal_DataTables').DataTable({
         "destroy": true,
         "ajax": {
             "url": "/informe/listPersonal/list",
@@ -103,6 +104,53 @@ function listarInformes(){
             { "data": "numero" },
             { "data": "descripcion" },
             { "data": "fecha" },
+            { "data": "botones" }
+        ],
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            },
+            "buttons": {
+                "copy": "Copiar",
+                "colvis": "Visibilidad"
+            }
+        }
+    });
+}
+
+function listarInformes(){
+    $('.tableInforme_DataTables').DataTable({
+        "destroy": true,
+        "ajax": {
+            "url": "/informe/list/list",
+            "dataSrc": ""
+        },
+        "columns": [
+            { "data": "i" },
+            { "data": "usuario" },
+            { "data": "numero" },
+            { "data": "titulo" },
+            { "data": "descripcion" },
+            { "data": "estado" },
             { "data": "botones" }
         ],
         "language": {

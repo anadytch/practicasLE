@@ -23,9 +23,10 @@ const { isAuthenticated } = require('../helpers/validation');
 
 const {
     renderInformeList,
+    listInforme,
     renderInformeListPersonal,
-    createInforme,
     listInformePersonal,
+    createInforme,
     deleteInforme,
     loadInforme,
     uploadInforme,
@@ -47,6 +48,9 @@ router.put('/informe/edit/:id', isAuthenticated, upload, uploadInforme);
 /*=============== AJAX ===============*/
 //listar informes personales (AJAX)
 router.get('/informe/listPersonal/list', listInformePersonal);
+
+//listar todos los informes de una fecha en especifico (AJAX)
+router.get('/informe/list/list', listInforme);
 
 //eliminar informe personales (AJAX)
 router.delete('/informe/delete:id', deleteInforme);

@@ -240,9 +240,9 @@ controllersUsers.listUsers = async (req, res) => {
             perfilUsuario = 'Usuario';
         }
         if(documents.estadoUser) {
-            estadoUsuario = '<span class="badge badge-pill badge-success">Activado</span>';
+            estadoUsuario = '<span class="badge badge-pill badge-success">Habilitado</span>';
         }else{
-            estadoUsuario = '<span class="badge badge-pill badge-warning">Desactivado</span>';
+            estadoUsuario = '<span class="badge badge-pill badge-warning">Deshabilitado</span>';
         }
         botones = "<div class='btn-group btn-group-sm'>" +
         "<a href='/users/listPersonal/"+ documents._id +"' class='btn btn-info btn-sm btn-infoUserListInforme' idUser='" + documents._id + "'><i class='fas fa-info'></i></a>" +

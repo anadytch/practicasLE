@@ -177,4 +177,27 @@ controllersInforme.listInformePersonal = async (req, res) => {
     res.json(datos);
 }
 
+controllersInforme.listInforme = async (req, res) => {
+    let i = 0;
+    let datos = [];
+    const documentsInforme = await modelsInforme.find();
+    documentsInforme.forEach( documents => {
+        i++;
+        botones = "<div class='btn-group btn-group-sm'>" +
+        "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
+        "<button class='btn btn-primary btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
+        "</div>";
+        datos.push({
+            i: i,
+            usuario: 'prueba',
+            numero: documents.numInforme,
+            titulo: documents.tituloInforme,
+            descripcion: documents.descripcionInforme,
+            estado: 'presentado',
+            botones: botones
+        })
+    })
+    res.json(datos);
+}
+
 module.exports = controllersInforme;

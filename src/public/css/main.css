@@ -1,10 +1,10 @@
-/*body {*/
+body {
     /*background: #667db6;  /* fallback for old browsers */
     /*background: -webkit-linear-gradient(to right, #667db6, #0082c8, #0082c8, #667db6);  /* Chrome 10-25, Safari 5.1-6 */
     /*background: linear-gradient(to right, #667db6, #0082c8, #0082c8, #667db6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     
-    /*background: #2E9AFE;*/
-/*}*/
+    background: #EAF2F8;
+}
 
 .logo {
     width: 50%;
@@ -14,3 +14,14 @@ table th {
     background-color: #2fa4e7 ! important;
     color: white;
 }
+
+/*@media only screen and (max-height: 400px) {
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        color: white;
+        text-align: center;
+    }
+}*/

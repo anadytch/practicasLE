@@ -12,26 +12,22 @@ controllersInforme.renderInformeListPersonal = async (req, res) => {
     res.render('informes/infUserList', { numInforme: numInforme});
 };
 
+controllersInforme.prueba22 = async (req, res) => {
+    const prueba22 = await modelsInforme.aggregate([{
+        $lookup: {
+            from: modelsUsers.collection.name,
+            localField: 'userInforme',
+            foreignField: '_id',
+            as: 'user'
+        }
+    }]);
+
+    res.json(prueba22);
+}
+
 //listar todos los informes
 controllersInforme.renderInformeList = async (req, res) => {
-    var i = 1;
-    let collections = [];
-    
-    const documentsInforme = await modelsInforme.find();
-    documentsInforme.forEach(async (documentsInforme) => {
-        const documentsUser = await modelsUsers.findOne({_id: documentsInforme.userInforme});
-        collections.push({
-            i: i++,
-            id: documentsInforme._id,
-            numInforme: documentsInforme.numInforme,
-            tituloInforme: documentsInforme.tituloInforme,
-            descripcionInforme: documentsInforme.descripcionInforme,
-            fechaInforme: documentsInforme.createdAt.toISOString().substring(0,10) + ' ' + documentsInforme.createdAt.toISOString().substring(12,19),
-            rutaInforme: documentsInforme.rutaInforme,
-            userInforme: documentsUser.nombreUser
-        });
-    });
-    res.render('informes/infList', {informes : collections});
+    res.render('informes/infList');
 };
 
 // (NUEVO) crear un informes nuevo
@@ -177,26 +173,42 @@ controllersInforme.listInformePersonal = async (req, res) => {
     res.json(datos);
 }
 
+//(LISTA) listar todos los informes - AJAX
 controllersInforme.listInforme = async (req, res) => {
     let i = 0;
     let datos = [];
-    const documentsInforme = await modelsInforme.find();
+    let usuario = [];
+    //const documentsInforme = await modelsInforme.find();
+    const documentsInforme = await modelsInforme.aggregate([{
+        $lookup: {
+            from: modelsUsers.collection.name,
+            localField: 'userInforme',
+            foreignField: '_id',
+            as: 'user'
+        }
+    }]);
+    //console.log(documentsInforme);
     documentsInforme.forEach( documents => {
+        //const usuario = await modelsUsers.findById(documents.userInforme);
         i++;
         botones = "<div class='btn-group btn-group-sm'>" +
         "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
         "<button class='btn btn-primary btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
         "</div>";
+        usuario = documents.user;
+        console.log(usuario.numInforme);
+        //console.log('informes : ',documents);
         datos.push({
             i: i,
-            usuario: 'prueba',
+            usuario: 'usuario',
             numero: documents.numInforme,
             titulo: documents.tituloInforme,
             descripcion: documents.descripcionInforme,
             estado: 'presentado',
             botones: botones
-        })
-    })
+        });
+    });
+    //console.log('datos : ', datos);
     res.json(datos);
 }
 

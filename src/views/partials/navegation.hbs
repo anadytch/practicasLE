@@ -15,12 +15,15 @@
                 {{#if user}}
                 {{#if user.perfilUser}}
                     <li class="nav-item dropdown">
+                        <a class="nav-link" href="/informe/listPersonal">Mis informes</a>       
+                    </li>
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Modulos
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/informe/list">Informe</a>
+                            <a class="dropdown-item" id="moduloInforme" href="/informe/list">Informe</a>
                             <a class="dropdown-item" href="/users/list">Usuarios</a>
                             <a class="dropdown-item" href="/areas/list">Áreas</a>
                             <a class="dropdown-item" href="/notes/list">Notas</a>

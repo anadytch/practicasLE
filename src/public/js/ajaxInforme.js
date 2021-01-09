@@ -1,8 +1,12 @@
 $(function () {
     // (LISTAR DE UN USUARIO) listar los informes personales
-    listarInformes();
+    $('#btn-listFechaInforme').click(function () {
+        listarInformes();
+    });
+
     listarInformesPersonal();
     informePresentado();
+    cantidadInformePresentado();
 
     // (VALIDAR) validar campos del informe
     $("#btn-newInforme").click(function () {
@@ -85,6 +89,29 @@ function informePresentado(){
                 $('#btn-NuevoInforme').removeAttr('disabled');
                 $('#btn-NuevoInforme').addClass('btn-primary');
                 $('#btn-NuevoInforme').removeClass('btn-warning');
+            }
+        }
+    })
+}
+
+function cantidadInformePresentado(){
+    $.ajax({
+        url: '/informe/cantidadInformeDia',
+        method: 'GET',
+        success: function (response) {
+            var num = new Date();
+            var numInforme = num.toISOString().substring(0,4) +'-'+ num.toISOString().substring(5,7) +'-'+ num.toISOString().substring(8,10);
+            console.log(numInforme);
+            $('#fechaInforme').val(numInforme);
+            //$('#fechaInforme').attr('max',numInforme);
+            if(response[0].cantidadUsers > response[0].cantidadInformePresentado){
+                $('#textCantidadInformeDia').html(response[0].diferencia);
+                $('#textCantidadInformeDia').addClass("badge-danger");
+                $('#textCantidadInformeDia').removeClass("badge-primary");
+            }else{
+                $('#textCantidadInformeDia').html(response[0].diferencia);
+                $('#textCantidadInformeDia').addClass("badge-primary");
+                $('#textCantidadInformeDia').removeClass("badge-danger");
             }
         }
     })

@@ -12,22 +12,11 @@ controllersInforme.renderInformeListPersonal = async (req, res) => {
     res.render('informes/infUserList', { numInforme: numInforme});
 };
 
-controllersInforme.prueba22 = async (req, res) => {
-    const prueba22 = await modelsInforme.aggregate([{
-        $lookup: {
-            from: modelsUsers.collection.name,
-            localField: 'userInforme',
-            foreignField: '_id',
-            as: 'user'
-        }
-    }]);
-
-    res.json(prueba22);
-}
-
 //listar todos los informes
 controllersInforme.renderInformeList = async (req, res) => {
-    res.render('informes/infList');
+    var num = new Date();
+    var maxFechaInforme = num.toISOString().substring(0,4) +'-'+ num.toISOString().substring(5,7) +'-'+ num.toISOString().substring(8,10);
+    res.render('informes/infList', {maxFechaInforme});
 };
 
 // (NUEVO) crear un informes nuevo
@@ -135,6 +124,23 @@ controllersInforme.informeDia = async (req, res) => {
     res.json(informePresentado);
 }
 
+//mostrar la cantidad de informes presentados en el dia
+controllersInforme.cantidadInformeDia = async (req, res) => {
+    let datos = [];
+    var num = new Date();
+    var numInforme = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
+    const cantidadUsers = await modelsUsers.count();
+    const cantidadInformePresentado = await modelsInforme.count({numInforme: numInforme});
+    let diferencia = cantidadUsers - cantidadInformePresentado;
+    datos.push({
+        cantidadUsers,
+        cantidadInformePresentado,
+        diferencia
+    });
+    console.log(datos);
+    res.json(datos);
+}
+
 //(DELETE) eliminar un registro con su documento de la TABLE del informe personal - AJAX
 controllersInforme.deleteInforme = async (req, res) => {
     const deleteInforme = await modelsInforme.findByIdAndDelete(req.params.id);
@@ -175,40 +181,56 @@ controllersInforme.listInformePersonal = async (req, res) => {
 
 //(LISTA) listar todos los informes - AJAX
 controllersInforme.listInforme = async (req, res) => {
-    let i = 0;
+    let count = 0;
     let datos = [];
-    let usuario = [];
-    //const documentsInforme = await modelsInforme.find();
-    const documentsInforme = await modelsInforme.aggregate([{
-        $lookup: {
-            from: modelsUsers.collection.name,
-            localField: 'userInforme',
-            foreignField: '_id',
-            as: 'user'
+    let informe = [];
+    var num = new Date();
+    var numInf = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
+
+    const documentsInforme = await modelsInforme.find({numInforme: numInf});
+    informe = documentsInforme;
+    const documentsUsers = await modelsUsers.find();
+
+    documentsUsers.forEach( documents => {
+        count++;
+        let presentado = true;
+        for (var i = 0; i < informe.length; i++) {
+            if( documents._id.toString() == informe[i].userInforme.toString()){
+
+                botones = "<div class='btn-group btn-group-sm'>" +
+                "<button class='btn btn-primary btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
+                "</div>";
+                datos.push({
+                    i: count,
+                    usuario: documents.nombreUser,
+                    numero: informe[i].numInforme,
+                    titulo: informe[i].tituloInforme,
+                    descripcion: informe[i].descripcionInforme,
+                    estado: '<span class="badge badge-pill badge-success">Presento</span>',
+                    botones: botones
+                });
+
+                presentado = false;
+                break;
+            }
         }
-    }]);
-    //console.log(documentsInforme);
-    documentsInforme.forEach( documents => {
-        //const usuario = await modelsUsers.findById(documents.userInforme);
-        i++;
-        botones = "<div class='btn-group btn-group-sm'>" +
-        "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
-        "<button class='btn btn-primary btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
-        "</div>";
-        usuario = documents.user;
-        console.log(usuario.numInforme);
-        //console.log('informes : ',documents);
-        datos.push({
-            i: i,
-            usuario: 'usuario',
-            numero: documents.numInforme,
-            titulo: documents.tituloInforme,
-            descripcion: documents.descripcionInforme,
-            estado: 'presentado',
-            botones: botones
-        });
+
+        if(presentado){
+
+            botones = "<div class='btn-group btn-group-sm'>" +
+            "<button class='btn btn-primary btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
+            "</div>";
+            datos.push({
+                i: count,
+                usuario: documents.nombreUser,
+                numero: numInf,
+                titulo: 'Sin titulo',
+                descripcion: 'Sin descripción',
+                estado: '<span class="badge badge-pill badge-danger">No presento</span>',
+                botones: botones
+            });
+        }
     });
-    //console.log('datos : ', datos);
     res.json(datos);
 }
 

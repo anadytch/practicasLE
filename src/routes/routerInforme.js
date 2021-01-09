@@ -31,7 +31,7 @@ const {
     loadInforme,
     uploadInforme,
     informeDia,
-    prueba22
+    cantidadInformeDia
 } = require('../controllers/controllersInforme');
 
 //listar los informes de cada personal
@@ -62,6 +62,8 @@ router.get('/informe/edit:id', loadInforme);
 //Mostrar mensaje del informe del dia - AJAX
 router.get('/informe/informeDia', informeDia);
 
-router.get('/prueba22', prueba22);
+//Mostrar cantidad de informes del dia - AJAX
+router.get('/informe/cantidadInformeDia', cantidadInformeDia);
+
 
 module.exports = router;

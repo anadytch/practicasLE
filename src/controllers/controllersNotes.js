@@ -24,7 +24,6 @@ controllersNotes.listNotes = async (req, res) => {
 
 // (NEW) guardar una nueva notA - AJAX
 controllersNotes.createNotes = async (req, res) => {
-    
     const {tituloNote, descripcionNote} = req.body;
     const newNotes = new modelsNotes({
         tituloNote,
@@ -47,7 +46,7 @@ controllersNotes.loadNotes = async (req, res) => {
     res.json(documentsNote);
 }
 
-// (UPLOAD) actualizar una nota - AJAX
+// (UPDATE) actualizar una nota - AJAX
 controllersNotes.updateNotes = async (req, res) => {
     const {idNote, tituloNote, descripcionNote} = req.body;
     const updateNote = await modelsNotes.findByIdAndUpdate(idNote, {

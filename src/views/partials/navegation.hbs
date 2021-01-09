@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
         <a class="navbar-brand" href="/">Legendary Evolution</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -6,10 +6,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
+            <ul class="navbar-nav"> 
                 <li class="nav-item">
                     <a class="nav-link" href="/about">About</a>
                 </li>
@@ -18,12 +15,15 @@
                 {{#if user}}
                 {{#if user.perfilUser}}
                     <li class="nav-item dropdown">
+                        <a class="nav-link" href="/informe/listPersonal">Mis informes</a>       
+                    </li>
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Modulos
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/informe/list">Informe</a>
+                            <a class="dropdown-item" id="moduloInforme" href="/informe/list">Informe</a>
                             <a class="dropdown-item" href="/users/list">Usuarios</a>
                             <a class="dropdown-item" href="/areas/list">Áreas</a>
                             <a class="dropdown-item" href="/notes/list">Notas</a>

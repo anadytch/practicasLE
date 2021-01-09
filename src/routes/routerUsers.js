@@ -38,8 +38,11 @@ const {
     renderUsersList,
     renderUsersPersonal,
     updateUser,
+    statusUsers,
+    listUsers,
+    loadUsers,
     deleteUsers,
-    statusUsers
+    listUserListInforme
 } = require('../controllers/controllersUsers');
 
 // para validar la sesion 
@@ -47,7 +50,7 @@ const { isAuthenticated } = require('../helpers/validation');
 
 //formulario para registrar usuario
 router.get('/users/signUp', renderSignUpForm);
-router.post('/users/signUp',upload, signUp );
+router.post('/users/signUp', upload, signUp );
 
 //formulario para logear usuario
 router.get('/users/signIn', renderSignInForm);
@@ -65,10 +68,20 @@ router.get('/users/listPersonal/:id', isAuthenticated, renderUsersPersonal);
 //editar usuario
 router.put('/users/edit/:id', isAuthenticated, upload, updateUser);
 
-//eliminar usuario
-router.delete('/users/delete/:id', isAuthenticated, deleteUsers);
-
 //cambiar estado del usuario
 router.get('/users/status/:id', isAuthenticated, statusUsers);
+
+/*=============== AJAX ===============*/
+//(LIST) listar user - AJAX
+router.get('/users/listar', isAuthenticated, listUsers);
+
+//(DELETE) eliminar usuario - AJAX
+router.delete('/users/delete/:id', isAuthenticated, deleteUsers);
+
+//(LOAD) cargar los datos de un usuario - AJAX
+router.get('/users/load/:id', isAuthenticated, loadUsers);
+
+//(LISTAR INFORMES PERSONAL)  listar los informes de un personal - AJAX
+router.get('/users/usersListInforme', isAuthenticated, listUserListInforme);
 
 module.exports = router;

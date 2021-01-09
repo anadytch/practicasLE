@@ -7,12 +7,15 @@ const {unlink} = require('fs-extra');
 
 const modelsUsers = require('../models/modelsUsers');
 const modelsAreas = require('../models/modelsAreas');
+const modelsInforme = require('../models/modelsInforme');
+
+var idUserListInforme = '';
 
 
 //formulario para registrar usuario
 controllersUsers.renderSignUpForm = async (req, res) => {
     const documentsArea = await modelsAreas.find({estadoArea: true});
-    res.render('users/userSignUp', {area : documentsArea});
+    res.render('users/userSignUp', {areaList : documentsArea});
 };
 
 //registrar usuario
@@ -98,36 +101,22 @@ controllersUsers.logout = (req, res) => {
 
 //listar los informes de todo el personal
 controllersUsers.renderUsersList = async (req, res) => {
-    var i = 1;
-    var perfilUsuario = true;
-    let collections = [];
-    
-    const documents = await modelsUsers.find();
     const documentsArea = await modelsAreas.find({estadoArea: true});
-    documents.forEach((documents) => {
-        if (documents.perfilUser) {
-            perfilUsuario = 'Administrador';
-        }else{
-            perfilUsuario = 'Usuario';
-        } 
-        collections.push({
-            i: i++,
-            id: documents._id,
-            dni: documents.dniUser,
-            nombre: documents.nombreUser,
-            area: documents.areaUser,
-            perfil: perfilUsuario,
-            estado: documents.estadoUser,
-            ultimoLogin: documents.updatedAt.toISOString().substring(0,10) + ' ' + documents.updatedAt.toISOString().substring(12,19)
-        })
-    });
-    res.render('users/userList', { users : collections , area : documentsArea});
+    res.render('users/userList', {areaList: documentsArea});
 };
 
 //listar informes personales, cargar datos para editar y listar informes del usuario
 controllersUsers.renderUsersPersonal = async (req, res) => {
-    const documentsUser = await modelsUsers.findById(req.params.id);
-    const documentsArea = await modelsAreas.find({estadoArea: true});
+    idUserListInforme = req.params.id;
+    var num = new Date();
+    var numInforme = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
+
+    //los datos del usuario
+    const documentsUser = await modelsUsers.findById(idUserListInforme);
+    //numero de informes presentados por el usuario
+    const numInformes = await modelsInforme.find({userInforme : idUserListInforme}).count();
+    //comprobar si presentado o no presentado su informe del dia.
+    const informePresentado = await modelsInforme.findOne({numInforme: numInforme, userInforme: idUserListInforme});
     var perfilNombre = '';
     if(documentsUser.perfilUser){
         perfilNombre = 'Administrador';
@@ -138,31 +127,36 @@ controllersUsers.renderUsersPersonal = async (req, res) => {
         idUser: req.params.id,
         dniUser: documentsUser.dniUser,
         perfilNombre,
-        perfilBoolean: documentsUser.perfilUser,
         nombreUser: documentsUser.nombreUser,
         emailUser: documentsUser.emailUser,
         areaUser: documentsUser.areaUser,
-        areaList: documentsArea,
-        rutaImgUser: documentsUser.rutaImgUser
+        rutaImgUser: documentsUser.rutaImgUser,
+        informePresentado,
+        estadoUsuario: documentsUser.estadoUser,
+        numInformes
     });
+    
 };
 
 //Editar usuario
 controllersUsers.updateUser = async (req, res) => {
     const errors = [];
-    var perfilNombre = '';
+    var perfilBoolean = false;
     var nuevoPassword = '';
+
     const documentsArea = await modelsAreas.find({estadoArea: true});
     const {
         idUser,
-        dniUser,
-        perfilUser,
-        nombreUser,
-        emailUser,
-        passwordUser,
-        passwordUserConfirm,
-        areaUser
+        editDniUser,
+        editPerfilUser,
+        editNombreUser,
+        editEmailUser,
+        editPasswordUser,
+        //editPasswordUserConfirm,
+        editAreaUser
     } = req.body;
+
+    //verificar si contiene una imagen (SI, se elimina la imagen - NO, se conserva la imagen dafault )
     const editUser = await modelsUsers.findOne({_id: idUser});
     if(req.file){
         rutaImgUser =  '/img/users/' + req.file.filename;
@@ -174,70 +168,52 @@ controllersUsers.updateUser = async (req, res) => {
         imageUser = false;
         rutaImgUser = editUser.rutaImgUser;
     }
-    if(perfilUser){
-        perfilNombre = 'Administrador';
+
+    //convertir 
+    if(editPerfilUser == '1'){
+        perfilBoolean = true;
     }else{
-        perfilNombre = 'Usuario';
+        perfilBoolean = false;
     }
-    if(!dniUser){
+
+    /*
+    if(!editDniUser){
         errors.push({text: 'Porfavor ingrese un DNI.'});
     }
-    if(!nombreUser){
+    if(!editNombreUser){
         errors.push({text: 'Porfavor ingrese un Nombre y apellido.'});
     }
-    if(!emailUser){
+    if(!editEmailUser){
         errors.push({text: 'Porfavor ingrese un Usuario.'});
     }
-    if(passwordUser.length > 0){
-        if ( passwordUser != passwordUserConfirm) {
+    if(editPasswordUser.length > 0){
+        if ( editPasswordUser != editPasswordUserConfirm) {
             errors.push({ text: 'El paswwords no coinciden.' });
         }
-        if (passwordUser.length < 4) {
+        if (editPasswordUser.length < 4) {
             errors.push({text: 'El password debe tener mas de 4 caracteres'});
         }
-    }
-    if(errors.length > 0){
-        res.render('users/userListPersonal', {
-            errors,
-            idUser,
-            dniUser,
-            perfilNombre,
-            perfilBoolean: perfilUser,
-            nombreUser,
-            emailUser,
-            areaUser,
-            areaList: documentsArea 
-        });
-    }else{
-        if(passwordUser.length > 0 ){
-            nuevoPassword = await editUser.encriptarPassword(passwordUser);
-        }
-        else{
-            nuevoPassword = editUser.passwordUser;
-        }
-        await modelsUsers.findByIdAndUpdate(idUser, {
-            dniUser,
-            perfilUser,
-            nombreUser,
-            emailUser,
-            passwordUser: nuevoPassword,
-            areaUser,
-            imageUser,
-            rutaImgUser
-        });
-        req.flash('success_msj', 'Usuario actualizada con exito');
-        res.redirect('/users/list/');
-    }
-};
+    }*/
 
-//para eliminar un usuario
-controllersUsers.deleteUsers = async (req, res) => {
-    const deleteUser = await modelsUsers.findByIdAndDelete(req.params.id);
-    if(deleteUser.imageUser){
-        unlink(path.resolve('./src/public' + deleteUser.rutaImgUser));
+    if(editPasswordUser.length > 0 ){
+        nuevoPassword = await editUser.encriptarPassword(editPasswordUser);
     }
-    req.flash('success_msj', 'El usuario se elimino correstamente');
-    res.redirect('/users/list');
+    else{
+        nuevoPassword = editUser.passwordUser;
+    }
+
+    await modelsUsers.findByIdAndUpdate(idUser, {
+        dniUser: editDniUser,
+        perfilUser: perfilBoolean,
+        nombreUser: editNombreUser,
+        emailUser: editEmailUser,
+        passwordUser: nuevoPassword,
+        areaUser: editAreaUser,
+        imageUser,
+        rutaImgUser
+    });
+    req.flash('success_msj', 'Usuario actualizada con exito');
+    res.redirect('/users/list/');
 };
 
 //para editar el estado de los usuarios
@@ -247,5 +223,99 @@ controllersUsers.statusUsers = async (req, res) => {
     await documents.save();
     res.redirect('/users/list');
 };
+
+/*=============== AJAX ===============*/
+//(LIST) listar a todos los users - AJAX
+controllersUsers.listUsers = async (req, res) => {
+    let i = 1;
+    let datos = [];
+    var perfilUsuario = '';
+    var estadoUsuario = '';
+
+    const documentsUsers = await modelsUsers.find();
+    documentsUsers.forEach( documents => {
+        if (documents.perfilUser) {
+            perfilUsuario = 'Administrador';
+        }else{
+            perfilUsuario = 'Usuario';
+        }
+        if(documents.estadoUser) {
+            estadoUsuario = '<span class="badge badge-pill badge-success">Habilitado</span>';
+        }else{
+            estadoUsuario = '<span class="badge badge-pill badge-warning">Deshabilitado</span>';
+        }
+        botones = "<div class='btn-group btn-group-sm'>" +
+        "<a href='/users/listPersonal/"+ documents._id +"' class='btn btn-info btn-sm btn-infoUserListInforme' idUser='" + documents._id + "'><i class='fas fa-info'></i></a>" +
+        "<button class='btn btn-danger btn-sm btn-deleteUser' idUser='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
+        "<button class='btn btn-primary btn-sm btn-loadUser' idUser='" + documents._id + "' data-toggle='modal' data-target='#editUsers'><i class='fas fa-edit'></i></button>" +
+        "</div>";
+
+        datos.push({
+            i: i++,
+            dni: documents.dniUser,
+            nombre: documents.nombreUser,
+            area: documents.areaUser,
+            perfil: perfilUsuario,
+            estado: estadoUsuario,
+            fecha: documents.updatedAt.toISOString().substring(0,10) + ' ' + documents.updatedAt.toISOString().substring(12,19),
+            botones: botones
+        })
+    })
+    res.json(datos);
+}
+
+//(DELETE) eliminar el registro - AJAX
+controllersUsers.deleteUsers = async (req, res) => {
+    const deleteUser = await modelsUsers.findByIdAndDelete(req.params.id);
+    if(deleteUser.imageUser){
+        unlink(path.resolve('./src/public' + deleteUser.rutaImgUser));
+    }
+    res.json('Se elimino correctamente al usuario');
+}
+
+//(LOAD) cargar los datos de un usuario - AJAX
+controllersUsers.loadUsers = async (req, res) => {
+    var datos = [];
+    var perfil = '';
+    const documents = await modelsUsers.findById(req.params.id);
+    if(documents.perfilUser){
+        perfil = '1';
+    }else{
+        perfil = '0';
+    }
+    datos.push({
+        _id: documents._id,
+        rutaImgUser: documents.rutaImgUser,
+        dniUser: documents.dniUser,
+        nombreUser: documents.nombreUser,
+        emailUser: documents.emailUser,
+        perfilBooleano: perfil,
+        areaUser: documents.areaUser
+    })
+    res.json(datos);
+}
+
+//(LISTA PERSONAL) listar los informes de un solo personal en especifico - AJAX
+controllersUsers.listUserListInforme = async (req, res) => {
+    let i = 0;
+    let datos = [];
+
+    const documentsInforme = await modelsInforme.find({userInforme: idUserListInforme});
+    documentsInforme.forEach( documents => {
+        i++;
+        botones = "<div>" +
+        "<button class='btn btn-primary btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
+        "</div>";
+        datos.push({
+            i: i,
+            numero: documents.numInforme,
+            titulo: documents.tituloInforme,
+            descripcion: documents.descripcionInforme,
+            fecha: documents.createdAt,
+            botones: botones
+        })
+    })
+    res.json(datos);
+}
 
 module.exports = controllersUsers;

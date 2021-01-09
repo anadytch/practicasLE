@@ -5,7 +5,7 @@ const InformeSchema = new Schema({
     descripcionInforme: {type: String, required: true},
     estadoInforme: {type: Boolean, required: true},
     rutaInforme: {type: String, required: true},
-    userInforme: {type: String, required: true}
+    userInforme: {type: Schema.Types.ObjectId, ref: 'users' ,required: true}
 },{
     timestamps: true
 });

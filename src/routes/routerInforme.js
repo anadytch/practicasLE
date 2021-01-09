@@ -3,6 +3,7 @@ const router = Router();
 const path = require('path');
 const multer = require('multer');
 const uuid = require('uuid/v4');
+const modelsInforme = require('../models/modelsInforme');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -22,12 +23,15 @@ const { isAuthenticated } = require('../helpers/validation');
 
 const {
     renderInformeList,
+    listInforme,
     renderInformeListPersonal,
-    createInforme,
     listInformePersonal,
+    createInforme,
     deleteInforme,
     loadInforme,
-    uploadInforme
+    uploadInforme,
+    informeDia,
+    cantidadInformeDia
 } = require('../controllers/controllersInforme');
 
 //listar los informes de cada personal
@@ -46,10 +50,20 @@ router.put('/informe/edit/:id', isAuthenticated, upload, uploadInforme);
 //listar informes personales (AJAX)
 router.get('/informe/listPersonal/list', listInformePersonal);
 
+//listar todos los informes de una fecha en especifico (AJAX)
+router.get('/informe/list/list', listInforme);
+
 //eliminar informe personales (AJAX)
 router.delete('/informe/delete:id', deleteInforme);
 
-//Cargar los datos para editar
+//Cargar los datos para editar (AJAX)
 router.get('/informe/edit:id', loadInforme);
+
+//Mostrar mensaje del informe del dia - AJAX
+router.get('/informe/informeDia', informeDia);
+
+//Mostrar cantidad de informes del dia - AJAX
+router.get('/informe/cantidadInformeDia', cantidadInformeDia);
+
 
 module.exports = router;

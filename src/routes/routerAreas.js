@@ -2,30 +2,41 @@ const {Router} = require('express');
 const router = Router();
 const {
     renderAreasForm,
-    createAreasNew,
-    renderAreasEdit,
-    updateAreas,
+    statusAreas,
+    listAreas,
+    createAreas,
     deleteAreas,
-    statusAreas
+    loadAreas,
+    updateAreas,
+    areasHabilitadas
 } = require('../controllers/controllersAreas');
 
 // para validar la sesion 
 const { isAuthenticated } = require('../helpers/validation');
 
-//Listar areas
+//Mostrar el modulo Area
 router.get('/areas/list', isAuthenticated, renderAreasForm);
 
-//crear areas
-router.post('/areas/add', isAuthenticated, createAreasNew);
+/*=============== AJAX ===============*/
+//(LIST) listar areas - AJAX
+router.get('/areas/listar', isAuthenticated, listAreas);
 
-//editar areas
-router.get('/areas/edit/:id', isAuthenticated, renderAreasEdit);
-router.put('/areas/edit/:id', isAuthenticated, updateAreas );
+//(NEW) guardar una nueva area - AJAX
+router.post('/areas/add', isAuthenticated, createAreas);
 
-//borrar areas
+//(DELETE) borrar areas - AJAX
 router.delete('/areas/delete/:id', isAuthenticated, deleteAreas);
 
-//estado areas
-router.get('/areas/status/:id', isAuthenticated, statusAreas)
+//(LOAD) cargar los datos de un area - AJAX
+router.get('/areas/load/:id', isAuthenticated, loadAreas);
+
+//(UPDATE) editar area
+router.put('/areas/edit/:id', isAuthenticated, updateAreas);
+
+//(STATUS) estado areas
+router.post('/areas/status/:id', isAuthenticated, statusAreas);
+
+//(AREAS HABILITADAS) mostrar la cantidad total de areas habilitadas
+router.get('/areas/areasHabilitadas', isAuthenticated, areasHabilitadas);
 
 module.exports = router;

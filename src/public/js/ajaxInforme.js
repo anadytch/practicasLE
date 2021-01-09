@@ -1,37 +1,20 @@
 $(function () {
-
-    // (MOSTRAR NOMBRE DEL ARCHIVO) mostrar el nombre de archivo a subir
-    $(".custom-file-input").on("change", function() {
-        var fileName = $(this).val().split("\\").pop();
-        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    // (LISTAR DE UN USUARIO) listar los informes personales
+    $('#btn-listFechaInforme').click(function () {
+        listarInformes();
     });
+
+    listarInformesPersonal();
+    informePresentado();
+    cantidadInformePresentado();
 
     // (VALIDAR) validar campos del informe
     $("#btn-newInforme").click(function () {
-        validarForm()
+        validarFormNewInforme();
     });
 
     $("#btn-editInforme").click(function () {
-        if ($('#editTituloInforme').val() == "") {
-            $("#editTituloInforme").focus();
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: '¡El campo titulo no puede estar vacio!'
-            })
-            
-            return false;
-        }
-        if (!$('#editDescripcionInforme').val()) {
-            $("#editDescripcionInforme").focus();
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: '¡El campo descripcion no puede estar vacio!'
-            })
-            return false;
-        }
-        return true;
+        validarFormEditInforme();
     });
 
     // (LOAD) cargar datos un informe
@@ -51,37 +34,6 @@ $(function () {
             }
         })
     })
-
-    // (LISTAR DE UN USUARIO) listar los informes personales
-    listarInformes();
-    function listarInformes() {
-        $.ajax({
-            url: '/informe/listPersonal/list',
-            success: function (data) {
-                var valor = '';
-                let i = 0;
-                console.log(data);
-                data.forEach(documents => {
-                    i++;
-                    valor += "<tr>" +
-                        "<td>" + i + "</td>" +
-                        "<td>" + documents.tituloInforme + "</td>" +
-                        "<td>" + documents.numInforme + "</td>" +
-                        "<td>" + documents.descripcionInforme + "</td>" +
-                        "<td>" + documents.createdAt + "</td>" +
-                        "<td>" +
-                        "<div class='btn-group btn-group-sm'>" +
-                        "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
-                        "<button class='btn btn-info btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
-                        "</div>" +
-                        "</td>" +
-                        "<tr>";
-                })
-                $('#tbodyInforme').html(valor);
-
-            }
-        });
-    }
 
     // (DELETE) eliminar un informe
     $('table').on('click', '.btn-deleteInforme', function (event) {
@@ -109,6 +61,7 @@ $(function () {
                             'success'
                         )
                         listarInformes();
+                        informePresentado();
                     }
                 })
                 
@@ -117,8 +70,149 @@ $(function () {
     })
 })
 
+function informePresentado(){
+    $.ajax({
+        url: '/informe/informeDia',
+        method: 'GET',
+        success: function (response) {
+            if(response){
+                $('#textInformeDia').html('Presentado');
+                $('#textInformeDia').addClass("badge-primary");
+                $('#textInformeDia').removeClass("badge-danger");
+                $('#btn-NuevoInforme').attr('disabled','disabled');
+                $('#btn-NuevoInforme').addClass('btn-warning');
+                $('#btn-NuevoInforme').removeClass('btn-primary');
+            }else{
+                $('#textInformeDia').html('No presentado');
+                $('#textInformeDia').addClass("badge-danger");
+                $('#textInformeDia').removeClass("badge-primary");
+                $('#btn-NuevoInforme').removeAttr('disabled');
+                $('#btn-NuevoInforme').addClass('btn-primary');
+                $('#btn-NuevoInforme').removeClass('btn-warning');
+            }
+        }
+    })
+}
+
+function cantidadInformePresentado(){
+    $.ajax({
+        url: '/informe/cantidadInformeDia',
+        method: 'GET',
+        success: function (response) {
+            var num = new Date();
+            var numInforme = num.toISOString().substring(0,4) +'-'+ num.toISOString().substring(5,7) +'-'+ num.toISOString().substring(8,10);
+            console.log(numInforme);
+            $('#fechaInforme').val(numInforme);
+            //$('#fechaInforme').attr('max',numInforme);
+            if(response[0].cantidadUsers > response[0].cantidadInformePresentado){
+                $('#textCantidadInformeDia').html(response[0].diferencia);
+                $('#textCantidadInformeDia').addClass("badge-danger");
+                $('#textCantidadInformeDia').removeClass("badge-primary");
+            }else{
+                $('#textCantidadInformeDia').html(response[0].diferencia);
+                $('#textCantidadInformeDia').addClass("badge-primary");
+                $('#textCantidadInformeDia').removeClass("badge-danger");
+            }
+        }
+    })
+}
+
+//(FUNCTION LISTAR) 
+function listarInformesPersonal(){
+    $('.tableInformePersonal_DataTables').DataTable({
+        "destroy": true,
+        "ajax": {
+            "url": "/informe/listPersonal/list",
+            "dataSrc": ""
+        },
+        "columns": [
+            { "data": "i" },
+            { "data": "titulo" },
+            { "data": "numero" },
+            { "data": "descripcion" },
+            { "data": "fecha" },
+            { "data": "botones" }
+        ],
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            },
+            "buttons": {
+                "copy": "Copiar",
+                "colvis": "Visibilidad"
+            }
+        }
+    });
+}
+
+function listarInformes(){
+    $('.tableInforme_DataTables').DataTable({
+        "destroy": true,
+        "ajax": {
+            "url": "/informe/list/list",
+            "dataSrc": ""
+        },
+        "columns": [
+            { "data": "i" },
+            { "data": "usuario" },
+            { "data": "numero" },
+            { "data": "titulo" },
+            { "data": "descripcion" },
+            { "data": "estado" },
+            { "data": "botones" }
+        ],
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            },
+            "buttons": {
+                "copy": "Copiar",
+                "colvis": "Visibilidad"
+            }
+        }
+    });
+}
+
 // (FUNCTION DE VALIDAR) validar el formulario de infUserList.hbs
-function validarForm() {
+function validarFormNewInforme() {
     if ($('#tituloInforme').val() == "") {
         $("#tituloInforme").focus();
         Swal.fire({
@@ -143,6 +237,29 @@ function validarForm() {
             icon: 'error',
             title: 'Oops...',
             text: '¡Suba su informe!'
+        })
+        return false;
+    }
+    return true;
+}
+
+function validarFormEditInforme(){
+    if ($('#editTituloInforme').val() == "") {
+        $("#editTituloInforme").focus();
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡El campo titulo no puede estar vacio!'
+        })
+        
+        return false;
+    }
+    if (!$('#editDescripcionInforme').val()) {
+        $("#editDescripcionInforme").focus();
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡El campo descripcion no puede estar vacio!'
         })
         return false;
     }

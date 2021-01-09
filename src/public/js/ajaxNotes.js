@@ -1,5 +1,4 @@
 $( function () {
-
     // (LISTAR NOTES) listar las notas
     listarNotes();
     function listarNotes() {
@@ -152,6 +151,43 @@ $( function () {
     })
 
 })  //fin
+
+//(FUNCTION LISTAR NOTES)
+function listarNotes() {
+    $.ajax({
+        url: '/notes/listNote',
+        success: function (data) {
+            var valor = '';
+            if(data.length != 0){
+                data.forEach(documents => {
+                    valor += "<div class='col-md-3'>" +
+                        "<div class='card bg-light mb-3'>" +
+                            "<div class='card-body'>" +
+                                "<h4 class='card-title d-flex justify-content-between align-items-center'>" +
+                                    documents.tituloNote +
+                                    "<a  class='btn-loadNotes' idNotes='"+ documents._id +"' data-toggle='modal' data-target='#editNote'><i class='fas fa-edit'></i></a>" +
+                                "</h4>" +
+                                "<p>" +
+                                    documents.descripcionNote +
+                                "</p>" +
+                                "<button class='btn btn-warning btn-block btn-sm btn-deleteNotes' idNotes='" + documents._id + "'>Eliminar</button>" +
+                            "</div>" +
+                        "</div>" +
+                    "</div>";
+                })
+
+            }else{
+                valor += "<div class='card mx-auto'>" +
+                    "<div class='card-body'>" +
+                        "<p class='lead'> No hay notas aún.</p>" +
+                        "<a class='btn btn-success btn-block' data-toggle='modal' data-target='#newNote'>Nueva nota</a>" +
+                    "</div>" +
+                "</div>";
+            }
+            $('#listNotes').html(valor);
+        }
+    });
+}
 
 // (FUNCTION) validar el formulario de noteList.hbs
 function validarFormNewNote() {

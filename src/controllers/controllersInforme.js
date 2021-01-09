@@ -8,29 +8,15 @@ const modelsUsers = require('../models/modelsUsers');
 //listar los informes de cada personal
 controllersInforme.renderInformeListPersonal = async (req, res) => {
     var num = new Date();
-    res.render('informes/infUserList', { numInforme: num.toISOString().substring(8,10)});
+    var numInforme = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
+    res.render('informes/infUserList', { numInforme: numInforme});
 };
 
 //listar todos los informes
 controllersInforme.renderInformeList = async (req, res) => {
-    var i = 1;
-    let collections = [];
-    
-    const documentsInforme = await modelsInforme.find();
-    documentsInforme.forEach(async (documentsInforme) => {
-        const documentsUser = await modelsUsers.findOne({_id: documentsInforme.userInforme});
-        collections.push({
-            i: i++,
-            id: documentsInforme._id,
-            numInforme: documentsInforme.numInforme,
-            tituloInforme: documentsInforme.tituloInforme,
-            descripcionInforme: documentsInforme.descripcionInforme,
-            fechaInforme: documentsInforme.createdAt.toISOString().substring(0,10) + ' ' + documentsInforme.createdAt.toISOString().substring(12,19),
-            rutaInforme: documentsInforme.rutaInforme,
-            userInforme: documentsUser.nombreUser
-        });
-    });
-    res.render('informes/infList', {informes : collections});
+    var num = new Date();
+    var maxFechaInforme = num.toISOString().substring(0,4) +'-'+ num.toISOString().substring(5,7) +'-'+ num.toISOString().substring(8,10);
+    res.render('informes/infList', {maxFechaInforme});
 };
 
 // (NUEVO) crear un informes nuevo
@@ -66,7 +52,7 @@ controllersInforme.createInforme = async (req, res) => {
             descripcionInforme
         });
     }else{
-        const informePresentado = false;//await modelsInforme.findOne({numInforme: numInforme, userInforme: req.user.id});
+        const informePresentado = await modelsInforme.findOne({numInforme: numInforme, userInforme: req.user.id});
         if(informePresentado){
             req.flash('error_msj', 'Ya presento su informe del dia');
             res.redirect('/informe/listPersonal');
@@ -86,7 +72,7 @@ controllersInforme.createInforme = async (req, res) => {
     }
 }
 
-// (UPLOAD) editar informe
+// (UPDATE) editar informe
 controllersInforme.uploadInforme = async (req, res) => {
     const errors = [];
 
@@ -130,31 +116,32 @@ controllersInforme.uploadInforme = async (req, res) => {
 };
 
 /*=============== AJAX ===============*/
+//mostrar el informe del dia
+controllersInforme.informeDia = async (req, res) => {
+    var num = new Date();
+    var numInforme = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
+    const informePresentado = await modelsInforme.findOne({numInforme: numInforme, userInforme: req.user.id});
+    res.json(informePresentado);
+}
 
-// nuevo informe
-controllersInforme.nuevoInforme = async (req, res) => {
-/*    const {numInforme, tituloInforme, descripcionInforme} = req.body();
-    const newInforme = new modelsInforme({
-        numInforme,
-        tituloInforme,
-        descripcionInforme,
-        estadoInforme,
-        rutaInforme,
-        userInforme : req.user.id
+//mostrar la cantidad de informes presentados en el dia
+controllersInforme.cantidadInformeDia = async (req, res) => {
+    let datos = [];
+    var num = new Date();
+    var numInforme = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
+    const cantidadUsers = await modelsUsers.count();
+    const cantidadInformePresentado = await modelsInforme.count({numInforme: numInforme});
+    let diferencia = cantidadUsers - cantidadInformePresentado;
+    datos.push({
+        cantidadUsers,
+        cantidadInformePresentado,
+        diferencia
     });
-    await newInforme.save();
-    */
-   console.log(req.body);
-   console.log(req.file);
+    console.log(datos);
+    res.json(datos);
 }
 
-//listar en TABLE los informes personales (AJAX)
-controllersInforme.listInformePersonal = async (req, res) => {
-    const documentsInforme = await modelsInforme.find();
-    res.json(documentsInforme);
-}
-
-//eliminar un registro con su documento de la TABLE del informe personal (AJAX)
+//(DELETE) eliminar un registro con su documento de la TABLE del informe personal - AJAX
 controllersInforme.deleteInforme = async (req, res) => {
     const deleteInforme = await modelsInforme.findByIdAndDelete(req.params.id);
     if(deleteInforme.estadoInforme){
@@ -163,10 +150,88 @@ controllersInforme.deleteInforme = async (req, res) => {
     res.json('Se elimino correctamente el archivo');
 }
 
-//Cargar datos del informe para poder editar
+//(LOAD) Cargar datos del informe para poder editar - AJAX
 controllersInforme.loadInforme = async (req, res) => {
     const documentsInforme = await modelsInforme.findById(req.params.id);
     res.json(documentsInforme);
+}
+
+//(LISTA PERSONAL) listar los informes de un solo personal en especifico - AJAX
+controllersInforme.listInformePersonal = async (req, res) => {
+    let i = 0;
+    let datos = [];
+    const documentsInforme = await modelsInforme.find({userInforme: req.user.id});
+    documentsInforme.forEach( documents => {
+        i++;
+        botones = "<div class='btn-group btn-group-sm'>" +
+        "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
+        "<button class='btn btn-primary btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
+        "</div>";
+        datos.push({
+            i: i,
+            titulo: documents.tituloInforme,
+            numero: documents.numInforme,
+            descripcion: documents.descripcionInforme,
+            fecha: documents.createdAt,
+            botones: botones
+        })
+    })
+    res.json(datos);
+}
+
+//(LISTA) listar todos los informes - AJAX
+controllersInforme.listInforme = async (req, res) => {
+    let count = 0;
+    let datos = [];
+    let informe = [];
+    var num = new Date();
+    var numInf = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
+
+    const documentsInforme = await modelsInforme.find({numInforme: numInf});
+    informe = documentsInforme;
+    const documentsUsers = await modelsUsers.find();
+
+    documentsUsers.forEach( documents => {
+        count++;
+        let presentado = true;
+        for (var i = 0; i < informe.length; i++) {
+            if( documents._id.toString() == informe[i].userInforme.toString()){
+
+                botones = "<div class='btn-group btn-group-sm'>" +
+                "<button class='btn btn-primary btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
+                "</div>";
+                datos.push({
+                    i: count,
+                    usuario: documents.nombreUser,
+                    numero: informe[i].numInforme,
+                    titulo: informe[i].tituloInforme,
+                    descripcion: informe[i].descripcionInforme,
+                    estado: '<span class="badge badge-pill badge-success">Presento</span>',
+                    botones: botones
+                });
+
+                presentado = false;
+                break;
+            }
+        }
+
+        if(presentado){
+
+            botones = "<div class='btn-group btn-group-sm'>" +
+            "<button class='btn btn-primary btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
+            "</div>";
+            datos.push({
+                i: count,
+                usuario: documents.nombreUser,
+                numero: numInf,
+                titulo: 'Sin titulo',
+                descripcion: 'Sin descripción',
+                estado: '<span class="badge badge-pill badge-danger">No presento</span>',
+                botones: botones
+            });
+        }
+    });
+    res.json(datos);
 }
 
 module.exports = controllersInforme;

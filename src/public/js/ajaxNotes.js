@@ -29,7 +29,7 @@ $( function () {
                     valor += "<div class='card mx-auto'>" +
                         "<div class='card-body'>" +
                             "<p class='lead'> No hay notas aún.</p>" +
-                            "<a href='/notes/add' class='btn btn-success btn-block'>Nueva nota</a>" +
+                            "<a href='' class='btn btn-success btn-block' data-toggle='modal' data-target='#newNote'>Nueva nota</a>" +
                         "</div>" +
                     "</div>";
                 }

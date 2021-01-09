@@ -51,7 +51,7 @@ router.put('/informe/edit/:id', isAuthenticated, upload, uploadInforme);
 router.get('/informe/listPersonal/list', listInformePersonal);
 
 //listar todos los informes de una fecha en especifico (AJAX)
-router.get('/informe/list/list', listInforme);
+router.get('/informe/list/list/:numInforme', listInforme);
 
 //eliminar informe personales (AJAX)
 router.delete('/informe/delete:id', deleteInforme);

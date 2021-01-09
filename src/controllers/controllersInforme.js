@@ -15,8 +15,8 @@ controllersInforme.renderInformeListPersonal = async (req, res) => {
 //listar todos los informes
 controllersInforme.renderInformeList = async (req, res) => {
     var num = new Date();
-    var maxFechaInforme = num.toISOString().substring(0,4) +'-'+ num.toISOString().substring(5,7) +'-'+ num.toISOString().substring(8,10);
-    res.render('informes/infList', {maxFechaInforme});
+    var fechaInforme = num.toISOString().substring(0,4) +'-'+ num.toISOString().substring(5,7) +'-'+ num.toISOString().substring(8,10);
+    res.render('informes/infList', {fechaInforme});
 };
 
 // (NUEVO) crear un informes nuevo
@@ -184,10 +184,8 @@ controllersInforme.listInforme = async (req, res) => {
     let count = 0;
     let datos = [];
     let informe = [];
-    var num = new Date();
-    var numInf = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
-
-    const documentsInforme = await modelsInforme.find({numInforme: numInf});
+    let numInforme = req.params.numInforme
+    const documentsInforme = await modelsInforme.find({numInforme: numInforme});
     informe = documentsInforme;
     const documentsUsers = await modelsUsers.find();
 
@@ -223,7 +221,7 @@ controllersInforme.listInforme = async (req, res) => {
             datos.push({
                 i: count,
                 usuario: documents.nombreUser,
-                numero: numInf,
+                numero: numInforme,
                 titulo: 'Sin titulo',
                 descripcion: 'Sin descripción',
                 estado: '<span class="badge badge-pill badge-danger">No presento</span>',

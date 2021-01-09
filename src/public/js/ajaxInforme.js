@@ -1,7 +1,10 @@
 $(function () {
     // (LISTAR DE UN USUARIO) listar los informes personales
     $('#btn-listFechaInforme').click(function () {
-        listarInformes();
+        let fecha = $('#fechaInforme').val();
+        let numInforme = fecha.toString().substring(8,10) + fecha.toString().substring(5,7) + fecha.toString().substring(0,4)
+        console.log(numInforme);
+        listarInformes(numInforme);
     });
 
     listarInformesPersonal();
@@ -99,11 +102,9 @@ function cantidadInformePresentado(){
         url: '/informe/cantidadInformeDia',
         method: 'GET',
         success: function (response) {
-            var num = new Date();
+            /*var num = new Date();
             var numInforme = num.toISOString().substring(0,4) +'-'+ num.toISOString().substring(5,7) +'-'+ num.toISOString().substring(8,10);
-            console.log(numInforme);
-            $('#fechaInforme').val(numInforme);
-            //$('#fechaInforme').attr('max',numInforme);
+            $('#fechaInforme').val(numInforme);*/
             if(response[0].cantidadUsers > response[0].cantidadInformePresentado){
                 $('#textCantidadInformeDia').html(response[0].diferencia);
                 $('#textCantidadInformeDia').addClass("badge-danger");
@@ -122,7 +123,7 @@ function listarInformesPersonal(){
     $('.tableInformePersonal_DataTables').DataTable({
         "destroy": true,
         "ajax": {
-            "url": "/informe/listPersonal/list",
+            "url": "/informe/listPersonal/list" ,
             "dataSrc": ""
         },
         "columns": [
@@ -164,11 +165,11 @@ function listarInformesPersonal(){
     });
 }
 
-function listarInformes(){
+function listarInformes(numInforme){
     $('.tableInforme_DataTables').DataTable({
         "destroy": true,
         "ajax": {
-            "url": "/informe/list/list",
+            "url": "/informe/list/list/"+ numInforme,
             "dataSrc": ""
         },
         "columns": [

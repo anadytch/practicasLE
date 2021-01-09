@@ -63,7 +63,7 @@ router.get('/informe/edit:id', loadInforme);
 router.get('/informe/informeDia', informeDia);
 
 //Mostrar cantidad de informes del dia - AJAX
-router.get('/informe/cantidadInformeDia', cantidadInformeDia);
+router.get('/informe/cantidadInformeDia/:numInforme', cantidadInformeDia);
 
 
 module.exports = router;

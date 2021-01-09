@@ -2,14 +2,14 @@ $(function () {
     // (LISTAR DE UN USUARIO) listar los informes personales
     $('#btn-listFechaInforme').click(function () {
         let fecha = $('#fechaInforme').val();
-        let numInforme = fecha.toString().substring(8,10) + fecha.toString().substring(5,7) + fecha.toString().substring(0,4)
-        console.log(numInforme);
-        listarInformes(numInforme);
+        let numInforme = fecha.toString().substring(8,10) + fecha.toString().substring(5,7) + fecha.toString().substring(0,4)        
+        cantidadInformePresentado(numInforme);
+        listarInformes(numInforme, fecha);
+        $('#dataTabla_informe_length').attr('style','margin-top: 8px;');
     });
-
+    
     listarInformesPersonal();
     informePresentado();
-    cantidadInformePresentado();
 
     // (VALIDAR) validar campos del informe
     $("#btn-newInforme").click(function () {
@@ -97,14 +97,11 @@ function informePresentado(){
     })
 }
 
-function cantidadInformePresentado(){
+function cantidadInformePresentado(numInforme){
     $.ajax({
-        url: '/informe/cantidadInformeDia',
+        url: '/informe/cantidadInformeDia/'+numInforme,
         method: 'GET',
         success: function (response) {
-            /*var num = new Date();
-            var numInforme = num.toISOString().substring(0,4) +'-'+ num.toISOString().substring(5,7) +'-'+ num.toISOString().substring(8,10);
-            $('#fechaInforme').val(numInforme);*/
             if(response[0].cantidadUsers > response[0].cantidadInformePresentado){
                 $('#textCantidadInformeDia').html(response[0].diferencia);
                 $('#textCantidadInformeDia').addClass("badge-danger");
@@ -118,9 +115,9 @@ function cantidadInformePresentado(){
     })
 }
 
-//(FUNCTION LISTAR) 
+//(FUNCTION LISTAR INFORMES DE UN PERSONAL) 
 function listarInformesPersonal(){
-    $('.tableInformePersonal_DataTables').DataTable({
+    var table = $('.tableInformePersonal_DataTables').DataTable({
         "destroy": true,
         "ajax": {
             "url": "/informe/listPersonal/list" ,
@@ -163,10 +160,12 @@ function listarInformesPersonal(){
             }
         }
     });
+
 }
 
-function listarInformes(numInforme){
-    $('.tableInforme_DataTables').DataTable({
+//(FUNCTION LISTAR INFORMES DE UN PERSONAL) 
+function listarInformes(numInforme, fechaInforme){
+    var table = $('#dataTabla_informe').DataTable({
         "destroy": true,
         "ajax": {
             "url": "/informe/list/list/"+ numInforme,
@@ -210,6 +209,48 @@ function listarInformes(numInforme){
             }
         }
     });
+    new $.fn.dataTable.Buttons( table, {
+        buttons: [
+            {
+                extend: 'excel',
+                text: 'Excel',
+                title: 'LEGENDARY EVOLUTION S.A.C.',
+                filename: 'Legendary Evolution (' + fechaInforme +')',
+                messageTop: 'Lista de Informes de todo el personal de la fecha ' + fechaInforme,
+                exportOptions: {
+                    modifier: {
+                        selected: null
+                    }
+                }
+            },, 
+            {
+                extend: 'pdf',
+                text: 'PDF',
+                title: 'LEGENDARY EVOLUTION S.A.C.',
+                filename: 'Legendary Evolution (' + fechaInforme +')',
+                messageTop: 'Lista de Informes de todo el personal de la fecha ' + fechaInforme,
+                //download: 'open',
+                exportOptions: {
+                    modifier: {
+                        selected: null
+                    }
+                }
+            },
+            {
+                extend: 'print',
+                text: 'Imprimir',
+                title: 'LEGENDARY EVOLUTION S.A.C.',
+                messageTop: 'Lista de Informes de todo el personal de la fecha ' + fechaInforme,
+                exportOptions: {
+                    modifier: {
+                        selected: null
+                    }
+                }
+            }
+        ]
+    } );
+
+    table.buttons( 0, null ).container().prependTo(table.table().container());
 }
 
 // (FUNCTION DE VALIDAR) validar el formulario de infUserList.hbs

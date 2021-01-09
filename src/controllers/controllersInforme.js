@@ -127,8 +127,7 @@ controllersInforme.informeDia = async (req, res) => {
 //mostrar la cantidad de informes presentados en el dia
 controllersInforme.cantidadInformeDia = async (req, res) => {
     let datos = [];
-    var num = new Date();
-    var numInforme = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
+    var numInforme = req.params.numInforme;
     const cantidadUsers = await modelsUsers.count();
     const cantidadInformePresentado = await modelsInforme.count({numInforme: numInforme});
     let diferencia = cantidadUsers - cantidadInformePresentado;

@@ -1,6 +1,17 @@
 $(function () {
+    //Fecha actual formato (DD de MM del YYYY)
+    var fecha = new Date();
+    var meses = ["Enero", "Febrero", "Marzo","Abril", "Mayo", "Junio", "Julio","Agosto", "Septiembre", "Octubre","Noviembre", "Diciembre"]
+    var dia = fecha.getDate();
+    var mes = fecha.getMonth();
+    var yyy = fecha.getFullYear();
+    var fecha_formateada = dia + ' de ' + meses[mes] + ' del ' + yyy;
+
+
     //(LISTAR) listar a los users
-    listarUsers();
+    listarUsers(fecha_formateada);
+    $('#tableUser_DataTables_length').attr('style','margin-top: 8px;');
+    
     
     //(VALIDAR) validar los campos de modal editar usuario
     $("#btn-editUser").click(function () {
@@ -65,8 +76,8 @@ $(function () {
 })
 
 //(FUNCTION LISTAR)
-function listarUsers () {
-    $('.tableUser_DataTables').DataTable({
+function listarUsers (fecha_formateada) {
+    var table = $('#tableUser_DataTables').DataTable({
         "destroy": true,
         "ajax": {
             "url": "/users/listar",
@@ -110,7 +121,51 @@ function listarUsers () {
                 "colvis": "Visibilidad"
             }
         }
-    })    
+    });
+
+    if(table.context.length == 1){
+        new $.fn.dataTable.Buttons( table, {
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: 'Excel',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    filename: 'Legendary Evolution - Lista de Usuarios ('+ fecha_formateada +')',
+                    messageTop: 'Lista de Usuarios - '+ fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                },, 
+                {
+                    extend: 'pdf',
+                    text: 'PDF',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    filename: 'Legendary Evolution - Lista de Usuarios ('+ fecha_formateada +')',
+                    messageTop: 'Lista de Usuarios - '+ fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimir',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    messageTop: 'Lista de Usuarios - '+ fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                }
+            ]
+        });
+    
+        table.buttons( 0, null ).container().prependTo(table.table().container());
+    }    
 }
 
 //(FUNCTION VALIDAR) validar el formulario del userList.hbs

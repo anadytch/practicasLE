@@ -2,7 +2,6 @@ const {Router} = require('express');
 const router = Router();
 const {
     renderAreasForm,
-    statusAreas,
     listAreas,
     createAreas,
     deleteAreas,
@@ -32,9 +31,6 @@ router.get('/areas/load/:id', isAuthenticated, loadAreas);
 
 //(UPDATE) editar area
 router.put('/areas/edit/:id', isAuthenticated, updateAreas);
-
-//(STATUS) estado areas
-router.post('/areas/status/:id', isAuthenticated, statusAreas);
 
 //(AREAS HABILITADAS) mostrar la cantidad total de areas habilitadas
 router.get('/areas/areasHabilitadas', isAuthenticated, areasHabilitadas);

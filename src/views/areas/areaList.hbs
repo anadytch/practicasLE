@@ -9,7 +9,7 @@
 <hr class="my-4 bg-secondary">
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-striped table-hover table-sm table-active responsive tableArea_DataTables">
+        <table id="tableArea_DataTables" class="table table-striped table-hover table-sm table-active responsive">
             <caption>Areas Habilitadas <span id="textAreasHabilitadas" class="badge badge-pill badge-primary"></span> </caption>
             <thead>
                 <tr>
@@ -53,7 +53,14 @@
                 </div>
                 <div class="form-group">
                     <textarea name="descripcionArea" id="descripcionArea" cols="30" placeholder="Ingrese un descripción" class="form-control"></textarea>
-                </div>                                
+                </div>  
+                <div class="form-group">
+                    <select class="custom-select form-control" name="estadoArea" id="estadoArea">
+                        <option selected>Selecciona el estado del área</option>
+                        <option value="1">Activado</option>
+                        <option value="0">Desactivado</option>
+                    </select>
+                </div>                            
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary btn-block">Guardar</button>
@@ -82,7 +89,14 @@
                 </div>
                 <div class="form-group">
                     <textarea name="editDescripcionArea" id="editDescripcionArea" cols="30" placeholder="Ingrese un descripción" class="form-control"></textarea>
-                </div>                                
+                </div>
+                <div class="form-group">
+                    <select class="custom-select form-control" name="editEstadoArea" id="editEstadoArea">
+                        <option selected>Selecciona el estado del área</option>
+                        <option value="1">Activado</option>
+                        <option value="0">Desactivado</option>
+                    </select>
+                </div>                              
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary btn-block">Guardar cambios</button>

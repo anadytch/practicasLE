@@ -1,6 +1,15 @@
 $(function () {
+    //Fecha actual formato (DD de MM del YYYY)
+    var fecha = new Date();
+    var meses = ["Enero", "Febrero", "Marzo","Abril", "Mayo", "Junio", "Julio","Agosto", "Septiembre", "Octubre","Noviembre", "Diciembre"]
+    var dia = fecha.getDate();
+    var mes = fecha.getMonth();
+    var yyy = fecha.getFullYear();
+    var fecha_formateada = dia + ' de ' + meses[mes] + ' del ' + yyy;
+
     // (LISTAR) listar las areas habilitadas y deshabilitadas
-    listarAreas();
+    listarAreas(fecha_formateada);
+    $('#tableArea_DataTables_length').attr('style','margin-top: 8px;');
     areasHabilitadas();
 
     //(NEW) guardar una nueva area
@@ -8,17 +17,20 @@ $(function () {
         event.preventDefault();
         let tituloArea = $('#tituloArea');
         let descripcionArea = $('#descripcionArea');
+        let estadoArea = $('#estadoArea');
         if(validarFormNewArea()){
             $.ajax({
                 url: '/areas/add',
                 method: 'POST',
                 data: {
                     tituloArea: tituloArea.val(),
-                    descripcionArea: descripcionArea.val()
+                    descripcionArea: descripcionArea.val(),
+                    estadoArea: estadoArea.val()
                 },
                 success: function(response) {
                     tituloArea.val('');
                     descripcionArea.val('');
+                    estadoArea.val('Selecciona el estado del área');
                     listarAreas();
                     areasHabilitadas();
                     $('#btn-cerrarModalNewArea').click();
@@ -74,10 +86,10 @@ $(function () {
             method: 'GET',
             success: function (documents) {
                 $("#formEditArea").attr('action','/area/edit/' + documents._id + '?_method=PUT');
-                $("#idArea").val(documents._id);
-                $("#editTituloArea").val(documents.tituloArea);
-                $("#editDescripcionArea").val(documents.descripcionArea);
-
+                $("#idArea").val(documents[0]._id);
+                $("#editTituloArea").val(documents[0].tituloArea);
+                $("#editDescripcionArea").val(documents[0].descripcionArea);
+                $("#editEstadoArea").val(documents[0].estadoArea);
             }
         })
     })
@@ -88,6 +100,7 @@ $(function () {
         let idArea = $('#idArea').val();
         let tituloArea = $('#editTituloArea');
         let descripcionArea = $('#editDescripcionArea');
+        let estadoArea = $('#editEstadoArea');
         if(validarFormEditArea() ){
             $.ajax({
                 url: '/areas/edit/' + idArea,
@@ -95,36 +108,24 @@ $(function () {
                 data: {
                     idArea: idArea,
                     tituloArea: tituloArea.val(),
-                    descripcionArea: descripcionArea.val()
+                    descripcionArea: descripcionArea.val(),
+                    estadoArea: estadoArea.val()
                 },
                 success: function(response) {
                     tituloArea.val('');
                     descripcionArea.val('');
+                    estadoArea.val('Selecciona el estado del área')
                     listarAreas();
                     areasHabilitadas();
                     $('#btn-cerrarModalEditArea').click();
                     Swal.fire(
                         'Actualizado!',
-                        'La area se actualizo exitosamente',
+                        'El área se actualizo exitosamente',
                         'success'
                     );
                 }
             });
         }
-    })
-
-    // (STATUS) cambiar el estado del area
-    $('table').on('click', '.btn-statusArea', function (event) {
-        event.preventDefault();
-        let id = $(this).attr('idArea');
-        $.ajax({
-            url: '/areas/status/' + id,
-            method: 'POST',
-            success: function (response) {
-                listarAreas();
-                areasHabilitadas();
-            }
-        })
     })
     
 })  //fin
@@ -140,8 +141,8 @@ function areasHabilitadas(){
 }
 
 //(FUNCTION LISTAR) 
-function listarAreas(){
-    $('.tableArea_DataTables').DataTable({
+function listarAreas(fecha_formateada){
+    var table = $('#tableArea_DataTables').DataTable({
         "destroy": true,
         "ajax": {
             "url": "/areas/listar",
@@ -183,6 +184,50 @@ function listarAreas(){
             }
         }
     });
+    
+    if(table.context.length == 1){
+        new $.fn.dataTable.Buttons( table, {
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: 'Excel',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    filename: 'Legendary Evolution - Lista de Áreas ('+ fecha_formateada +')',
+                    messageTop: 'Lista de Áreas - '+ fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                },, 
+                {
+                    extend: 'pdf',
+                    text: 'PDF',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    filename: 'Legendary Evolution - Lista de Áreas ('+ fecha_formateada +')',
+                    messageTop: 'Lista de Áreas - '+ fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimir',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    messageTop: 'Lista de Áreas - '+ fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                }
+            ]
+        });
+    
+        table.buttons( 0, null ).container().prependTo(table.table().container());
+    }
 }
 
 // (FUNCTION) validar el formulario de noteList.hbs
@@ -206,6 +251,15 @@ function validarFormNewArea() {
         })
         return false;
     }
+    if ($('#estadoArea').val() == 'Selecciona el estado del área') {
+        $("#estadoArea").focus();
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡No selecciono el estado del área!'
+        })
+        return false;
+    }
     return true;
 }
 
@@ -226,6 +280,15 @@ function validarFormEditArea() {
             icon: 'error',
             title: 'Oops...',
             text: '¡El campo descripcion no puede estar vacio!'
+        })
+        return false;
+    }
+    if ($('#editEstadoArea').val() == 'Selecciona el estado del área') {
+        $("#editEstadoArea").focus();
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡No selecciono el estado del área!'
         })
         return false;
     }

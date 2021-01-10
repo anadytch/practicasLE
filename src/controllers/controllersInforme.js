@@ -8,6 +8,7 @@ const modelsUsers = require('../models/modelsUsers');
 //listar los informes de cada personal
 controllersInforme.renderInformeListPersonal = async (req, res) => {
     var num = new Date();
+    console.log(num);
     var numInforme = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
     res.render('informes/infUserList', { numInforme: numInforme});
 };

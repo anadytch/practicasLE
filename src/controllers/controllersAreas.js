@@ -24,10 +24,18 @@ controllersAreas.listAreas = async (req, res) => {
     const documentsArea = await modelsAreas.find();
     documentsArea.forEach(documents => {
         if(documents.estadoArea){
+            estado = '<span class="badge badge-pill badge-success">Activado</span>';
+        }else{
+            estado = '<span class="badge badge-pill badge-danger">desactivado</span>';
+        }
+        /*
+        if(documents.estadoArea){
             estado = "<button class='btn btn-success btn-sm btn-statusArea' idArea='"+ documents._id +"'>Activado</button>";
         }else{
             estado = "<button class='btn btn-warning btn-sm btn-statusArea' idArea='"+ documents._id +"'>Desactivado</button>"
-        }
+        } 
+        */
+       
         let botones = "<div class='btn-group btn-group-sm'>" +
         "<button class='btn btn-danger btn-sm btn-deleteArea' idArea='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
         "<button class='btn btn-primary btn-sm btn-loadArea' idArea='" + documents._id + "' data-toggle='modal' data-target='#editArea'><i class='fas fa-edit'></i></button>" +
@@ -45,10 +53,11 @@ controllersAreas.listAreas = async (req, res) => {
 
 //(NEW) guardar un nuevo area - AJAX
 controllersAreas.createAreas = async (req, res) => {
-    const {tituloArea, descripcionArea} = req.body;
+    const {tituloArea, descripcionArea, estadoArea} = req.body;
     const newArea = new modelsAreas({
         tituloArea,
-        descripcionArea
+        descripcionArea,
+        estadoArea
     });
     await newArea.save();
     res.json(newArea);
@@ -62,26 +71,32 @@ controllersAreas.deleteAreas = async (req, res) => {
 
 //(LOAD) cargar los datos de un area - AJAX
 controllersAreas.loadAreas = async (req, res) => {
+    var datos = [];
+    var estado = '';
     const documentsArea = await modelsAreas.findById(req.params.id);
-    res.json(documentsArea);
+    if(documentsArea.estadoArea){
+        perfil = '1';
+    }else{
+        perfil = '0';
+    }
+    datos.push({
+        _id: documentsArea._id,
+        tituloArea: documentsArea.tituloArea,
+        descripcionArea: documentsArea.descripcionArea,
+        estadoArea: perfil
+    });
+    res.json(datos);
 }
 
 //(UPDATE) actualizar un area - AJAX
 controllersAreas.updateAreas = async (req, res) => {
-    const {idArea, tituloArea, descripcionArea} = req.body;
+    const {idArea, tituloArea, descripcionArea, estadoArea} = req.body;
     const updateArea = await modelsAreas.findByIdAndUpdate(idArea, {
         tituloArea,
-        descripcionArea
+        descripcionArea,
+        estadoArea
     });
     res.json(updateArea);
 }
-
-//(STATUS) Estado del area - AJAX
-controllersAreas.statusAreas = async (req, res) => {
-    const documents = await modelsAreas.findById(req.params.id);
-    documents.estadoArea = !documents.estadoArea;
-    await documents.save();
-    res.json(documents);
-};
 
 module.exports = controllersAreas;

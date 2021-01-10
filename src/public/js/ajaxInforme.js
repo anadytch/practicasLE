@@ -1,13 +1,16 @@
 $(function () {
     // (LISTAR DE UN USUARIO) listar los informes personales
     $('#btn-listFechaInforme').click(function () {
-        let fecha = $('#fechaInforme').val();
-        let numInforme = fecha.toString().substring(8,10) + fecha.toString().substring(5,7) + fecha.toString().substring(0,4)        
+        let fechaInforme = $('#fechaInforme').val();
+        let numInforme = fechaInforme.toString().substring(8,10) + fechaInforme.toString().substring(5,7) + fechaInforme.toString().substring(0,4)        
+
+        var fecha_formateada = fechaConFormato(fechaInforme);
+
         cantidadInformePresentado(numInforme);
-        listarInformes(numInforme, fecha);
-        $('#dataTabla_informe_length').attr('style','margin-top: 8px;');
+        listarInformes(numInforme, fecha_formateada);
+        $('#tableInforme_DataTables_length').attr('style','margin-top: 8px;');
     });
-    
+
     listarInformesPersonal();
     informePresentado();
 
@@ -117,6 +120,7 @@ function cantidadInformePresentado(numInforme){
 
 //(FUNCTION LISTAR INFORMES DE UN PERSONAL) 
 function listarInformesPersonal(){
+    var fecha_formateada = fechaConFormato();
     var table = $('.tableInformePersonal_DataTables').DataTable({
         "destroy": true,
         "ajax": {
@@ -160,12 +164,55 @@ function listarInformesPersonal(){
             }
         }
     });
+    if(table.context.length == 1){
+        new $.fn.dataTable.Buttons( table, {
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: 'Excel',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    filename: 'Legendary Evolution - Lista de Informes personal (' + fecha_formateada +')',
+                    messageTop: 'Lista de Informes - ' + fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                },, 
+                {
+                    extend: 'pdf',
+                    text: 'PDF',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    filename: 'Legendary Evolution - Lista de Informes (' + fecha_formateada +')',
+                    messageTop: 'Lista de Informes de todo el personal - ' + fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimir',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    messageTop: 'Lista de Informes de todo el personal - ' + fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                }
+            ]
+        });
+    
+        table.buttons( 0, null ).container().prependTo(table.table().container());
+    }
 
 }
 
-//(FUNCTION LISTAR INFORMES DE UN PERSONAL) 
-function listarInformes(numInforme, fechaInforme){
-    var table = $('#dataTabla_informe').DataTable({
+//(FUNCTION LISTAR INFORMES) 
+function listarInformes(numInforme, fecha_formateada){
+    var table = $('#tableInforme_DataTables').DataTable({
         "destroy": true,
         "ajax": {
             "url": "/informe/list/list/"+ numInforme,
@@ -215,8 +262,8 @@ function listarInformes(numInforme, fechaInforme){
                 extend: 'excel',
                 text: 'Excel',
                 title: 'LEGENDARY EVOLUTION S.A.C.',
-                filename: 'Legendary Evolution (' + fechaInforme +')',
-                messageTop: 'Lista de Informes de todo el personal de la fecha ' + fechaInforme,
+                filename: 'Legendary Evolution - Lista de Informes (' + fecha_formateada +')',
+                messageTop: 'Lista de Informes de todo el personal - ' + fecha_formateada,
                 exportOptions: {
                     modifier: {
                         selected: null
@@ -227,9 +274,8 @@ function listarInformes(numInforme, fechaInforme){
                 extend: 'pdf',
                 text: 'PDF',
                 title: 'LEGENDARY EVOLUTION S.A.C.',
-                filename: 'Legendary Evolution (' + fechaInforme +')',
-                messageTop: 'Lista de Informes de todo el personal de la fecha ' + fechaInforme,
-                //download: 'open',
+                filename: 'Legendary Evolution - Lista de Informes (' + fecha_formateada +')',
+                messageTop: 'Lista de Informes de todo el personal - ' + fecha_formateada,
                 exportOptions: {
                     modifier: {
                         selected: null
@@ -240,7 +286,7 @@ function listarInformes(numInforme, fechaInforme){
                 extend: 'print',
                 text: 'Imprimir',
                 title: 'LEGENDARY EVOLUTION S.A.C.',
-                messageTop: 'Lista de Informes de todo el personal de la fecha ' + fechaInforme,
+                messageTop: 'Lista de Informes de todo el personal - ' + fecha_formateada,
                 exportOptions: {
                     modifier: {
                         selected: null
@@ -248,7 +294,7 @@ function listarInformes(numInforme, fechaInforme){
                 }
             }
         ]
-    } );
+    });
 
     table.buttons( 0, null ).container().prependTo(table.table().container());
 }
@@ -306,4 +352,18 @@ function validarFormEditInforme(){
         return false;
     }
     return true;
+}
+
+function fechaConFormato(fechaInforme){
+    if(fechaInforme != null){
+        var fecha = new Date(fechaInforme);
+    }else{
+        var fecha = new Date();
+    }
+    var meses = ["Enero", "Febrero", "Marzo","Abril", "Mayo", "Junio", "Julio","Agosto", "Septiembre", "Octubre","Noviembre", "Diciembre"]
+    var dia = fecha.getDate();
+    var mes = fecha.getMonth();
+    var yyy = fecha.getFullYear();
+    var fecha_formateada = dia + ' de ' + meses[mes] + ' del ' + yyy;
+    return fecha_formateada;
 }

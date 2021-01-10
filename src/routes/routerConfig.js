@@ -2,7 +2,8 @@ const {Router} = require('express');
 const router = Router();
 const {
     renderConfigForm,
-    enviarCorreo
+    enviarCorreo,
+    updateConfig
 } = require('../controllers/controllersConfig');
 
 // para validar la sesion 
@@ -13,5 +14,8 @@ router.get('/config', isAuthenticated, renderConfigForm);
 
 //Enviar un correo
 router.get('/config/enviar', isAuthenticated, enviarCorreo);
+
+//Guardar una nueva config
+router.put('/config/edit/:id', isAuthenticated, updateConfig);
 
 module.exports = router;

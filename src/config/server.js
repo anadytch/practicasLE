@@ -25,39 +25,8 @@ app.engine('.hbs', exphbs({     /* motor de plantilla */
 }));
 app.set('view engine', '.hbs');
 
-//procesar imagenes
-/*
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../public/img/users'));
-    },
-    filename: (req, file, cb) => {
-        cb(null, uuid() + path.extname(file.originalname));  //(error, nombre)
-    },
-    limits: {
-        fileSize: 1000000
-    },
-
-});
-*/
-
 //middlewares
 app.use(morgan('dev'));
-/*
-app.use(multer({
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|png|jpg/;
-        const mimetype = filetypes.test(file.mimetype);
-        const extname = filetypes.test(path.extname(file.originalname));
-        if(mimetype && extname){
-            return cb(null, true);
-        }
-        cb('error: Archivo debe ser una imagen valida');
-    },
-    storage
-}).single('fotoUser')); //({name: name1}, {name: name2})
-
-*/
 app.use(express.urlencoded({extended: false}));
 app.use(methodOverride('_method'));  //permite enviar otros method
 app.use(session({

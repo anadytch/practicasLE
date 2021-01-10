@@ -1,5 +1,4 @@
 const controllersAreas = {};
-const { stat } = require('fs-extra');
 const modelsAreas = require('../models/modelsAreas');
 const modelsUsers = require('../models/modelsUsers');
 
@@ -26,15 +25,8 @@ controllersAreas.listAreas = async (req, res) => {
         if(documents.estadoArea){
             estado = '<span class="badge badge-pill badge-success">Activado</span>';
         }else{
-            estado = '<span class="badge badge-pill badge-danger">desactivado</span>';
+            estado = '<span class="badge badge-pill badge-danger">Desactivado</span>';
         }
-        /*
-        if(documents.estadoArea){
-            estado = "<button class='btn btn-success btn-sm btn-statusArea' idArea='"+ documents._id +"'>Activado</button>";
-        }else{
-            estado = "<button class='btn btn-warning btn-sm btn-statusArea' idArea='"+ documents._id +"'>Desactivado</button>"
-        } 
-        */
        
         let botones = "<div class='btn-group btn-group-sm'>" +
         "<button class='btn btn-danger btn-sm btn-deleteArea' idArea='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +

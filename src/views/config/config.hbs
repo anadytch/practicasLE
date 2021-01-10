@@ -1,34 +1,48 @@
+<form action="" method="POST" id="formEditConfig">
+<input type="hidden" name="_method" value="PUT">
+<input type="hidden" name="idConfig" id="idConfig" value="{{_id}}">
 <div class="row">
     <div class="col-md-8">
         <h3>Configuraciones</h3>
     </div>
     <div class="col-md-2">
-        <a href="/config/enviar" class="btn btn-primary btn-block">Enviar</a>
+        <a href="/config/enviar" class="btn btn-success btn-block"><b>Enviar</b></a>
     </div>
     <div class="col-md-2">
-        <a class="btn btn-primary btn-block">Guardar</a>
+        <button type="submit" class="btn btn-primary btn-block"><b>Guardar</b></button>
     </div>
 </div>
 <hr class="my-4 bg-secondary">
+<p>
+    <b>Nota:</b> El correo se enviará automaticamente al <i>Destinatario</i> a las 20:00 horas o enviarlo más antes presionando el boton <i>Enviar.</i><br>
+    Puede guardar el <i>Emisor, Destinatario</i> y el <i>Asunto</i> presionando el boton <i>Guardar.</i>
+</p>
 <div class="row">
     <!-- mostrar los imput de configuración -->
     <div class="col-md-6">
         <div class="form-group">
-            <label for="emailConfig">Email</label>
-            <input type="email" class="form-control" id="emailConfig" aria-describedby="emailHelp" placeholder="Ingrese su Email">
-            <small id="emailHelp" class="form-text text-muted">Ingresa el email al que se le enviará el reporte del día.</small>
+            <label for="emailEmisor">Emisor</label>
+            <input type="email" class="form-control" id="emailEmisor" name="emailEmisor" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailEmisor}}">
+            <small id="emailEmisor" class="form-text text-muted">Ingresa el E-mail de donde se enviará el correo.</small>
         </div>
         <div class="form-group">
-            <label for="emailConfig">Asunto del Correo</label>
-            <input type="email" class="form-control" id="emailConfig" aria-describedby="emailHelp" placeholder="Ingrese el asunto">
-            <small id="emailHelp" class="form-text text-muted">Por defecto: "Reporte del día".</small>
+            <label for="emailDestino">Destinatario</label>
+            <input type="email" class="form-control" id="emailDestino" name="emailDestino" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailDestino}}">
+            <small id="emailDestino" class="form-text text-muted">Ingresa el E-mail al que se le enviará el correo.</small>
         </div>
+
     </div>
     <div class="col-md-6">
         <div class="form-group">
-            <label for="exampleTextarea">Mensaje del Correo</label>
-            <textarea class="form-control" id="exampleTextarea" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 78px;"></textarea>
-            <small id="emailHelp" class="form-text text-muted">Por defecto: Se enviara el reporte del día.</small>
+            <label for="asunto">Asunto</label>
+            <input type="text" class="form-control" id="asunto" name="asunto" placeholder="Ingrese el asunto" value="{{asunto}}">
+            <small class="form-text text-muted">Por defecto: "Reporte del día".</small>
+        </div>
+        <div class="form-group">
+            <label for="mensaje">Mensaje</label>
+            <textarea class="form-control" id="mensaje" name="mensaje" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 78px;"></textarea>
+            <small id="mensaje" class="form-text text-muted">Por defecto: Se enviara el reporte del día.</small>
         </div>
     </div>
 </div>
+</form>

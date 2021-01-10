@@ -103,7 +103,7 @@ $(function () {
         let estadoArea = $('#editEstadoArea');
         if(validarFormEditArea() ){
             $.ajax({
-                url: '/areas/edit/' + idArea,
+                url: '/areas/edit/' + idArea ,
                 method: 'PUT',
                 data: {
                     idArea: idArea,

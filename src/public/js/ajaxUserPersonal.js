@@ -1,13 +1,15 @@
 $(function (){
     listarInformesUser();
-
+    $('#tableInformeUser_DataTables_length').attr('style','margin-top: 8px;');
     informePresentado();
 
 })
 
 function listarInformesUser(){
+    var nombrePersonal = $('#nombrePersonal').text();
+    var fecha_formateada = fechaConFormato();
 
-    $('.tableInformeUser_DataTables').DataTable({
+    var table = $('#tableInformeUser_DataTables').DataTable({
         "destroy": true,
         "ajax": {
             "url": "/users/usersListInforme",
@@ -50,4 +52,48 @@ function listarInformesUser(){
             }
         }
     });
+
+    if(table.context.length == 1){
+        new $.fn.dataTable.Buttons( table, {
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: 'Excel',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    filename: 'Legendary Evolution - Lista de Informes de '+ nombrePersonal +' (' + fecha_formateada +')',
+                    messageTop: 'Lista de Informes de '+ nombrePersonal +' - ' + fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                },, 
+                {
+                    extend: 'pdf',
+                    text: 'PDF',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    filename: 'Legendary Evolution - Lista de Informes de '+ nombrePersonal +' (' + fecha_formateada +')',
+                    messageTop: 'Lista de Informes de '+ nombrePersonal +' - ' + fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimir',
+                    title: 'LEGENDARY EVOLUTION S.A.C.',
+                    messageTop: 'Lista de Informes de '+ nombrePersonal +' - ' + fecha_formateada,
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
+                    }
+                }
+            ]
+        });
+    
+        table.buttons( 0, null ).container().prependTo(table.table().container());
+    }
 }

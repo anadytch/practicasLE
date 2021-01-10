@@ -84,6 +84,7 @@ app.use(require('../routes/routerUsers'));
 app.use(require('../routes/routerNotes'));
 app.use(require('../routes/routerAreas'));
 app.use(require('../routes/routerInforme'));
+app.use(require('../routes/routerConfig'));
 
 //statis files
 app.use(express.static(path.join(__dirname, '../public')));

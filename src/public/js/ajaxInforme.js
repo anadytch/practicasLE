@@ -12,6 +12,7 @@ $(function () {
     });
 
     listarInformesPersonal();
+    $('#tableInformePersonal_DataTables_length').attr('style','margin-top: 8px;');
     informePresentado();
 
     // (VALIDAR) validar campos del informe
@@ -120,8 +121,10 @@ function cantidadInformePresentado(numInforme){
 
 //(FUNCTION LISTAR INFORMES DE UN PERSONAL) 
 function listarInformesPersonal(){
+    var nombreUser = $('.nombreUser').attr('nombreUser');
     var fecha_formateada = fechaConFormato();
-    var table = $('.tableInformePersonal_DataTables').DataTable({
+
+    var table = $('#tableInformePersonal_DataTables').DataTable({
         "destroy": true,
         "ajax": {
             "url": "/informe/listPersonal/list" ,
@@ -171,8 +174,8 @@ function listarInformesPersonal(){
                     extend: 'excel',
                     text: 'Excel',
                     title: 'LEGENDARY EVOLUTION S.A.C.',
-                    filename: 'Legendary Evolution - Lista de Informes personal (' + fecha_formateada +')',
-                    messageTop: 'Lista de Informes - ' + fecha_formateada,
+                    filename: 'Legendary Evolution - Lista de Informes de '+ nombreUser +' (' + fecha_formateada +')',
+                    messageTop: 'Lista de Informes de '+ nombreUser +' - ' + fecha_formateada,
                     exportOptions: {
                         modifier: {
                             selected: null
@@ -183,8 +186,8 @@ function listarInformesPersonal(){
                     extend: 'pdf',
                     text: 'PDF',
                     title: 'LEGENDARY EVOLUTION S.A.C.',
-                    filename: 'Legendary Evolution - Lista de Informes (' + fecha_formateada +')',
-                    messageTop: 'Lista de Informes de todo el personal - ' + fecha_formateada,
+                    filename: 'Legendary Evolution - Lista de Informes de '+ nombreUser +' (' + fecha_formateada +')',
+                    messageTop: 'Lista de Informes de '+ nombreUser +' - ' + fecha_formateada,
                     exportOptions: {
                         modifier: {
                             selected: null
@@ -195,7 +198,7 @@ function listarInformesPersonal(){
                     extend: 'print',
                     text: 'Imprimir',
                     title: 'LEGENDARY EVOLUTION S.A.C.',
-                    messageTop: 'Lista de Informes de todo el personal - ' + fecha_formateada,
+                    messageTop: 'Lista de Informes de '+ nombreUser +' - ' + fecha_formateada,
                     exportOptions: {
                         modifier: {
                             selected: null

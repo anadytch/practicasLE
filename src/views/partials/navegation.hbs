@@ -27,7 +27,7 @@
                             <a class="dropdown-item" href="/users/list">Usuarios</a>
                             <a id="btn-menuArea" class="dropdown-item" href="/areas/list">Áreas</a>
                             <a class="dropdown-item" href="/notes/list">Notas</a>
-                            <a class="dropdown-item" href="#">Configuraciones</a>
+                            <a class="dropdown-item" href="/config">Configuraciones</a>
                         </div>
                     </li>
                 {{else}}
@@ -45,7 +45,7 @@
 
                 <!-- Menu de perfil -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    <a class="nav-link dropdown-toggle nombreUser" nombreUser="{{user.nombreUser}}" href="#" id="navbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{user.nombreUser}}
                         <img src="{{user.rutaImgUser}}" alt="logo" class="rounded-circle"  height="30" style="width:30px;">

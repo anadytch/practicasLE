@@ -13,7 +13,7 @@ const { isAuthenticated } = require('../helpers/validation');
 router.get('/config', isAuthenticated, renderConfigForm);
 
 //Enviar un correo
-router.get('/config/enviar', isAuthenticated, enviarCorreo);
+router.post('/config/enviar', isAuthenticated, enviarCorreo);
 
 //Guardar una nueva config
 router.put('/config/edit/:id', isAuthenticated, updateConfig);

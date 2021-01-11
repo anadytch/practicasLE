@@ -6,7 +6,7 @@
         <h3>Configuraciones</h3>
     </div>
     <div class="col-md-2">
-        <a href="/config/enviar" class="btn btn-success btn-block"><b>Enviar</b></a>
+        <a href="" class="btn btn-success btn-block btn-enviarCorreo"><b>Enviar</b></a>
     </div>
     <div class="col-md-2">
         <button type="submit" class="btn btn-primary btn-block"><b>Guardar</b></button>
@@ -21,25 +21,33 @@
     <!-- mostrar los imput de configuración -->
     <div class="col-md-6">
         <div class="form-group">
-            <label for="emailEmisor">Emisor</label>
+            <label for="emailEmisor"><b>Emisor</b></label>
             <input type="email" class="form-control" id="emailEmisor" name="emailEmisor" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailEmisor}}">
+            <input type="hidden" id="emailEmisorDB" value="{{emailEmisor}}">
             <small id="emailEmisor" class="form-text text-muted">Ingresa el E-mail de donde se enviará el correo.</small>
         </div>
         <div class="form-group">
-            <label for="emailDestino">Destinatario</label>
+            <input type="password" class="form-control" id="passwordEmisor" name="passwordEmisor" placeholder="Ingrese la contraseña del Emisor">
+            <input type="hidden" id="passwordEmisorDB" value="{{passwordEmisor}}">
+            <small id="passwordEmisor" class="form-text text-muted">Ingrese la contraseña del Emisor</small>
+        </div>
+        <div class="form-group">
+            <label for="emailDestino"><b>Destinatario</b></label>
             <input type="email" class="form-control" id="emailDestino" name="emailDestino" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailDestino}}">
+            <input type="hidden" id="emailDestinoDB" value="{{emailDestino}}">
             <small id="emailDestino" class="form-text text-muted">Ingresa el E-mail al que se le enviará el correo.</small>
         </div>
 
     </div>
     <div class="col-md-6">
         <div class="form-group">
-            <label for="asunto">Asunto</label>
+            <label for="asunto"><b>Asunto</b></label>
             <input type="text" class="form-control" id="asunto" name="asunto" placeholder="Ingrese el asunto" value="{{asunto}}">
+            <input type="hidden" id="asuntoDB" value="{{asunto}}">
             <small class="form-text text-muted">Por defecto: "Reporte del día".</small>
         </div>
         <div class="form-group">
-            <label for="mensaje">Mensaje</label>
+            <label for="mensaje"><b>Mensaje</b></label>
             <textarea class="form-control" id="mensaje" name="mensaje" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 78px;"></textarea>
             <small id="mensaje" class="form-text text-muted">Por defecto: Se enviara el reporte del día.</small>
         </div>

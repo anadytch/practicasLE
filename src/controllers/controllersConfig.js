@@ -8,38 +8,63 @@ controllersConfig.renderConfigForm = async (req, res) => {
     res.render('config/config', {
         _id: documentsConfig[0]._id,
         emailEmisor: documentsConfig[0].emailEmisor,
+        passwordEmisor: documentsConfig[0].passwordEmisor,
         emailDestino: documentsConfig[0].emailDestino,
         asunto: documentsConfig[0].asunto
     });
 };
 
 controllersConfig.updateConfig = async (req, res) => {
-    const {idConfig, emailEmisor, emailDestino, asunto} = req.body;
+    let nuevoPassword = "";
+    let passwordEmisorOriginal = "";
+    const {idConfig, emailEmisor, passwordEmisor, emailDestino, asunto, estadoPassword} = req.body;
+    
+    const editarConfig = await modelsConfig.findOne({_id: idConfig});
+    if(estadoPassword){
+        nuevoPassword = await editarConfig.encriptarPassword(passwordEmisor);
+        passwordEmisorOriginal = passwordEmisor;
+    }else{
+        nuevoPassword = passwordEmisor;
+        passwordEmisorOriginal = editarConfig.passwordEmisorOriginal;
+    }
+    console.log('contraseña original', editarConfig.passwordEmisorOriginal);
+
+    console.log( passwordEmisor ,' - encriptado : ', nuevoPassword);
     const updateConfiguracion = await modelsConfig.findByIdAndUpdate(idConfig, {
         emailEmisor,
+        passwordEmisor: nuevoPassword,
+        passwordEmisorOriginal: passwordEmisorOriginal,
         emailDestino,
         asunto
     });
-    console.log(idConfig, ' --- ', updateConfiguracion);
     res.json(updateConfiguracion);
 };
 
 controllersConfig.enviarCorreo = async (req, res) => {
+    var mensajeNuevo = "";
+
+    const {idConfig, emailEmisorDB, emailDestinoDB, asuntoDB, mensaje} = req.body;
+    const datosConfig = await modelsConfig.findOne({_id: idConfig});
+
     var transporte = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'saldivar.rednaxela@gmail.com',
-            pass: 'rednaxela17'
+            user: emailEmisorDB,
+            pass: datosConfig.passwordEmisorOriginal
         }
     });
 
-    var mensaje = "Este es una mensaje de prueba";
+    if(mensaje == null || mensaje == ""){
+        mensajeNuevo = "Mensaje automatico";
+    }else{
+        mensajeNuevo = mensaje;
+    }
 
     var opciones = {
-        from: 'saldivar.rednaxela@gmail.com',
-        to: 'saldivar17.x@gmail.com',
-        subject: 'Asunto de prueba',
-        text: mensaje
+        from: emailEmisorDB,
+        to: emailDestinoDB,
+        subject: asuntoDB,
+        text: mensajeNuevo
     };
 
     transporte.sendMail(opciones, function(error, info){
@@ -49,6 +74,7 @@ controllersConfig.enviarCorreo = async (req, res) => {
             console.log('Email enviado: '+ info.response);
         }
     });
+    res.json('El correo se envió exitosamente');
 };
 
 module.exports = controllersConfig;

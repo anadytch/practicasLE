@@ -1,6 +1,3 @@
-<form action="" method="POST" id="formEditConfig">
-<input type="hidden" name="_method" value="PUT">
-<input type="hidden" name="idConfig" id="idConfig" value="{{_id}}">
 <div class="row">
     <div class="col-md-8">
         <h3>Configuraciones</h3>
@@ -15,79 +12,75 @@
 <hr class="my-4 bg-secondary">
 <p>
     <b>Nota:</b> El correo se enviará automaticamente al <i>Destinatario</i> a las 20:00 horas o enviarlo más antes presionando el boton <i>Enviar.</i><br>
-    Puede guardar el <i>Emisor, Destinatario</i> y el <i>Asunto</i> presionando el boton <i>Guardar.</i>
+    Puede cambiar el <i>Emisor, Destinatario</i> y el <i>Asunto</i> presionando el boton <i>Nuevo.</i>
 </p>
 <div class="row">
     <!-- mostrar los imput de configuración -->
     <div class="col-md-6">
         <div class="form-group">
             <label for="emailEmisor"><b>Emisor</b></label>
-            <input type="email" class="form-control" id="emailEmisor" name="emailEmisor" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailEmisor}}">
+            <input type="email" class="form-control" id="emailEmisor" name="emailEmisor" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailEmisor}}" disabled>
             <input type="hidden" id="emailEmisorDB" value="{{emailEmisor}}">
-            <small id="emailEmisor" class="form-text text-muted">Ingresa el E-mail quién enviará el correo.</small>
+            <input type="hidden" id="passwordEmisorDB" value="{{passwordEmisor}}">
+            <small id="emailEmisor" class="form-text text-muted">El E-mail quién enviará el correo.</small>
         </div>
         <div class="form-group">
             <label for="emailDestino"><b>Destinatario</b></label>
-            <input type="email" class="form-control" id="emailDestino" name="emailDestino" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailDestino}}">
+            <input type="email" class="form-control" id="emailDestino" name="emailDestino" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailDestino}}" disabled>
             <input type="hidden" id="emailDestinoDB" value="{{emailDestino}}">
-            <small id="emailDestino" class="form-text text-muted">Ingresa el E-mail al que se le enviará el correo.</small>
+            <small id="emailDestino" class="form-text text-muted">El E-mail a quién se le enviará el correo.</small>
         </div>
 
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label for="asunto"><b>Asunto</b></label>
-            <input type="text" class="form-control" id="asunto" name="asunto" placeholder="Ingrese el asunto" value="{{asunto}}">
+            <input type="text" class="form-control" id="asunto" name="asunto" placeholder="Ingrese el asunto" value="{{asunto}}" disabled>
             <input type="hidden" id="asuntoDB" value="{{asunto}}">
-            <small class="form-text text-muted">Por defecto: "Reporte del día".</small>
         </div>
         <div class="form-group">
             <label for="mensaje"><b>Mensaje</b></label>
             <textarea class="form-control" id="mensaje" name="mensaje" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 78px;"></textarea>
-            <small id="mensaje" class="form-text text-muted">Por defecto: Se enviara el reporte del día.</small>
+            <small id="mensaje" class="form-text text-muted">Por defecto se enviara el reporte del día.</small>
         </div>
     </div>
 </div>
-</form>
 
 <!-- Modal nuevo -->
 <div class="modal fade" id="nuevoConfig" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST" id="formArea">
+            <form action="" method="POST" id="formEditConfig">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="idConfig" id="idConfig" value="{{_id}}">
             <div class="modal-header">
                 <h5 class="modal-title">Nueva Configuración</h5>
-                <button type="button" id="btn-cerrarModalNewArea" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" id="btn-cerrarModalConfig" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="emailEmisor"><b>Emisor</b></label>
-                    <input type="email" class="form-control" id="emailEmisor" name="emailEmisor" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailEmisor}}">
-                    <input type="hidden" id="emailEmisorDB" value="{{emailEmisor}}">
-                    <small id="emailEmisor" class="form-text text-muted">Ingresa el E-mail de donde se enviará el correo.</small>
+                    <label for="editEmailEmisor"><b>Emisor</b></label>
+                    <input type="email" class="form-control" id="editEmailEmisor" name="editEmailEmisor" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailEmisor}}">
+                    <small id="editEmailEmisor" class="form-text text-muted">El E-mail quién enviará el correo.</small>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" id="passwordEmisor" name="passwordEmisor" placeholder="Ingrese la contraseña del Emisor">
-                    <input type="hidden" id="passwordEmisorDB" value="{{passwordEmisor}}">
-                    <small id="passwordEmisor" class="form-text text-muted">Ingrese la contraseña del Emisor</small>
+                    <input type="password" class="form-control" id="editPasswordEmisor" name="editPasswordEmisor" placeholder="Ingrese la contraseña del Emisor">
+                    <small id="editPasswordEmisor" class="form-text text-muted">La contraseña del Emisor</small>
                 </div>
                 <div class="form-group">
-                    <label for="emailDestino"><b>Destinatario</b></label>
-                    <input type="email" class="form-control" id="emailDestino" name="emailDestino" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailDestino}}">
-                    <input type="hidden" id="emailDestinoDB" value="{{emailDestino}}">
-                    <small id="emailDestino" class="form-text text-muted">Ingresa el E-mail al que se le enviará el correo.</small>
+                    <label for="editEmailDestino"><b>Destinatario</b></label>
+                    <input type="email" class="form-control" id="editEmailDestino" name="editEmailDestino" aria-describedby="emailHelp" placeholder="Ingrese un correo electronico Gmail" value="{{emailDestino}}">
+                    <small id="editEmailDestino" class="form-text text-muted">El E-mail a quién se le enviará el correo.</small>
                 </div>
                 <div class="form-group">
-                    <label for="asunto"><b>Asunto</b></label>
-                    <input type="text" class="form-control" id="asunto" name="asunto" placeholder="Ingrese el asunto" value="{{asunto}}">
-                    <input type="hidden" id="asuntoDB" value="{{asunto}}">
-                    <small class="form-text text-muted">Por defecto: "Reporte del día".</small>
+                    <label for="editAsunto"><b>Asunto</b></label>
+                    <input type="text" class="form-control" id="editAsunto" name="editAsunto" placeholder="Ingrese el asunto" value="{{asunto}}">
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+                <button type="submit" class="btn btn-primary btn-block actualizarDatos">Guardar</button>
             </div>
             </form>
         </div>

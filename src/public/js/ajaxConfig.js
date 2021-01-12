@@ -2,14 +2,17 @@ $(function () {
     //(UPDATE) editar o actualizar las configuraciones
     $('#formEditConfig').on('submit', function (event) {
         event.preventDefault();
+        let urlConfig = '';
+        let metodoConfig = '';
+        let email1 = '';
         let passwordEmisor_confirmado = "";
         let estadoPassword = false;
 
         let idConfig = $('#idConfig');
-        let emailEmisor = $('#emailEmisor');
-        let passwordEmisor = $('#passwordEmisor');
-        let emailDestino = $('#emailDestino');
-        let asunto = $('#asunto');
+        let emailEmisor = $('#editEmailEmisor');
+        let passwordEmisor = $('#editPasswordEmisor');
+        let emailDestino = $('#editEmailDestino');
+        let asunto = $('#editAsunto');
 
         let emailEmisorDB = $('#emailEmisorDB');
         let passwordEmisorDB = $('#passwordEmisorDB');
@@ -24,10 +27,18 @@ $(function () {
             estadoPassword = true;
         }
 
+        if(idConfig.val() == null || idConfig.val() == ""){
+            urlConfig = '/config/new';
+            metodoConfig = 'POST';
+        }else{
+            urlConfig = '/config/edit/' + idConfig.val() + '?_method=PUT';
+            metodoConfig = 'PUT';
+        }
+
         if(validarFormConfig(emailEmisorDB, emailDestinoDB, asuntoDB) ){
             $.ajax({
-                url: '/config/edit/' + idConfig + '?_method=PUT',
-                method: 'PUT',
+                url: urlConfig,
+                method: metodoConfig,
                 data: {
                     idConfig: idConfig.val(),
                     emailEmisor: emailEmisor.val(),
@@ -36,13 +47,21 @@ $(function () {
                     asunto: asunto.val(),
                     estadoPassword: estadoPassword
                 },
-                success: function(response) {
-                    $('#passwordEmisor').val('');
+                success: function(document) {
                     Swal.fire(
                         'Actualizado!',
                         'El área se actualizo exitosamente',
                         'success'
                     );
+                    $('#btn-cerrarModalConfig').click();
+                    $('#emailEmisor').val(document.emailEmisor);
+                    $('#emailDestino').val(document.emailDestino);
+                    $('#asunto').val(document.asunto);
+                    $('#emailEmisorDB').val(document.emailEmisor);
+                    $('#emailDestinoDB').val(document.emailDestino);
+                    $('#asuntoDB').val(document.asunto);
+
+                    $('#editPasswordEmisor').val('');
                 }
             });
         }
@@ -80,8 +99,8 @@ $(function () {
 });
 
 function validarFormConfig(emailEmisorDB, emailDestinoDB, asuntoDB) {
-    if ($('#emailEmisor').val() == "") {
-        $("#emailEmisor").focus();
+    if ($('#editEmailEmisor').val() == "") {
+        $("#editEmailEmisor").focus();
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -90,8 +109,8 @@ function validarFormConfig(emailEmisorDB, emailDestinoDB, asuntoDB) {
         
         return false;
     }
-    if ($('#emailDestino').val() == "") {
-        $("#emailDestino").focus();
+    if ($('#editEmailDestino').val() == "") {
+        $("#editEmailDestino").focus();
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -99,8 +118,8 @@ function validarFormConfig(emailEmisorDB, emailDestinoDB, asuntoDB) {
         })
         return false;
     }
-    if ($('#asunto').val() == "") {
-        $("#asunto").focus();
+    if ($('#editAsunto').val() == "") {
+        $("#editAsunto").focus();
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -108,8 +127,8 @@ function validarFormConfig(emailEmisorDB, emailDestinoDB, asuntoDB) {
         })
         return false;
     }
-    if ($('#emailEmisor').val() == emailEmisorDB.val() && $('#emailDestino').val() == emailDestinoDB.val() && $('#asunto').val() == asuntoDB.val()) {
-        $("#emailEmisor").focus();
+    if ($('#editEmailEmisor').val() == emailEmisorDB.val() && $('#editEmailDestino').val() == emailDestinoDB.val() && $('#editAsunto').val() == asuntoDB.val()) {
+        $("#editEmailEmisor").focus();
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -118,8 +137,8 @@ function validarFormConfig(emailEmisorDB, emailDestinoDB, asuntoDB) {
         
         return false;
     }
-    if ($('#emailEmisor').val() != emailEmisorDB.val() && $('#passwordEmisor').val() == "") {
-        $("#emailEmisor").focus();
+    if ($('#editEmailEmisor').val() != emailEmisorDB.val() && $('#editPasswordEmisor').val() == "") {
+        $("#editEmailEmisor").focus();
         Swal.fire({
             icon: 'error',
             title: 'Oops...',

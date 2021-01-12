@@ -7,13 +7,38 @@ const modelsUsers = require('../models/modelsUsers');
 //Mostrar interfaz del modulo Config
 controllersConfig.renderConfigForm = async (req, res) => {
     const documentsConfig = await modelsConfig.find();
-    res.render('config/config', {
-        _id: documentsConfig[0]._id,
-        emailEmisor: documentsConfig[0].emailEmisor,
-        passwordEmisor: documentsConfig[0].passwordEmisor,
-        emailDestino: documentsConfig[0].emailDestino,
-        asunto: documentsConfig[0].asunto
+    if( documentsConfig == null || documentsConfig == ""){
+        res.render('config/config', {
+            _id: "",
+            emailEmisor: "",
+            passwordEmisor: "",
+            emailDestino: "",
+            asunto: ""
+        });
+    }else{
+        res.render('config/config', {
+            _id: documentsConfig[0]._id,
+            emailEmisor: documentsConfig[0].emailEmisor,
+            passwordEmisor: documentsConfig[0].passwordEmisor,
+            emailDestino: documentsConfig[0].emailDestino,
+            asunto: documentsConfig[0].asunto
+        });
+    }
+};
+
+controllersConfig.createConfig = async (req, res) => {
+    const {idConfig, emailEmisor, passwordEmisor, emailDestino, asunto, estadoPassword} = req.body;
+    const newConfig = new modelsConfig({
+        emailEmisor,
+        passwordEmisor,
+        passwordEmisorOriginal: passwordEmisor,
+        emailDestino,
+        asunto
     });
+    newConfig.passwordEmisor = await newConfig.encriptarPassword(passwordEmisor);
+    await newConfig.save();
+    console.log('nuevo : ', newConfig);
+    res.json(newConfig);
 };
 
 controllersConfig.updateConfig = async (req, res) => {
@@ -37,7 +62,9 @@ controllersConfig.updateConfig = async (req, res) => {
         emailDestino,
         asunto
     });
-    res.json(updateConfiguracion);
+    
+    const configuraciones = await modelsConfig.findOne({_id: idConfig});
+    res.json(configuraciones);
 };
 
 controllersConfig.enviarCorreo = async (req, res) => {

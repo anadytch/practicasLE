@@ -118,10 +118,16 @@ controllersUsers.renderUsersPersonal = async (req, res) => {
     //comprobar si presentado o no presentado su informe del dia.
     const informePresentado = await modelsInforme.findOne({numInforme: numInforme, userInforme: idUserListInforme});
     var perfilNombre = '';
+    var estadoNombre = '';
     if(documentsUser.perfilUser){
         perfilNombre = 'Administrador';
     }else{
         perfilNombre = 'Usuario';
+    }
+    if(documentsUser.estadoUser){
+        estadoNombre = 'Activado';
+    }else{
+        estadoNombre = 'Desactivado';
     }
     res.render('users/userListPersonal', {
         idUser: req.params.id,
@@ -132,8 +138,10 @@ controllersUsers.renderUsersPersonal = async (req, res) => {
         areaUser: documentsUser.areaUser,
         rutaImgUser: documentsUser.rutaImgUser,
         informePresentado,
-        estadoUsuario: documentsUser.estadoUser,
-        numInformes
+        estadoUsuario: estadoNombre,
+        numInformes,
+        createdAt: fechaConFormato(documentsUser.createdAt, false),
+        updatedAt: fechaConFormato(documentsUser.updatedAt, false)
     });
     
 };
@@ -152,7 +160,6 @@ controllersUsers.updateUser = async (req, res) => {
         editNombreUser,
         editEmailUser,
         editPasswordUser,
-        //editPasswordUserConfirm,
         editAreaUser
     } = req.body;
 
@@ -257,7 +264,7 @@ controllersUsers.listUsers = async (req, res) => {
             area: documents.areaUser,
             perfil: perfilUsuario,
             estado: estadoUsuario,
-            fecha: documents.updatedAt.toISOString().substring(0,10) + ' ' + documents.updatedAt.toISOString().substring(12,19),
+            fecha: fechaConFormato(documents.updatedAt, true),
             botones: botones
         })
     })
@@ -304,14 +311,14 @@ controllersUsers.listUserListInforme = async (req, res) => {
     documentsInforme.forEach( documents => {
         i++;
         botones = "<div>" +
-        "<button class='btn btn-primary btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
+        "<button class='btn btn-success btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
         "</div>";
         datos.push({
             i: i,
             numero: documents.numInforme,
             titulo: documents.tituloInforme,
             descripcion: documents.descripcionInforme,
-            fecha: documents.createdAt,
+            fecha: fechaConFormato(documents.createdAt, true),
             botones: botones
         })
     })
@@ -319,3 +326,28 @@ controllersUsers.listUserListInforme = async (req, res) => {
 }
 
 module.exports = controllersUsers;
+
+
+function fechaConFormato(fechaDB, conHora){
+    var fecha = '';
+    var fecha_formateada = '';
+    if(fechaDB != null || fechaDB != ""){
+        fecha = fechaDB;
+    }else{
+        var fecha = new Date();
+    }
+    var meses = ["Enero", "Febrero", "Marzo","Abril", "Mayo", "Junio", "Julio","Agosto", "Septiembre", "Octubre","Noviembre", "Diciembre"]
+    var dia = fecha.getDate();
+    var mes = fecha.getMonth();
+    var yyy = fecha.getFullYear();
+    var hora = fecha.getHours();
+    var minuto = fecha.getMinutes();
+    var segundo = fecha.getSeconds();
+    if(conHora){
+        fecha_formateada = dia + ' de ' + meses[mes] + ' del ' + yyy + ' ' + hora + ':' + minuto + ':' + segundo +'_horas.';
+    }else{
+        fecha_formateada = dia + ' de ' + meses[mes] + ' del ' + yyy;
+    }
+    
+    return fecha_formateada;
+}

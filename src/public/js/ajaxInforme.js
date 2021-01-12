@@ -132,8 +132,8 @@ function listarInformesPersonal(){
         },
         "columns": [
             { "data": "i" },
-            { "data": "titulo" },
             { "data": "numero" },
+            { "data": "titulo" },
             { "data": "descripcion" },
             { "data": "fecha" },
             { "data": "botones" }

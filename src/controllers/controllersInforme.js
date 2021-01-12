@@ -8,7 +8,6 @@ const modelsUsers = require('../models/modelsUsers');
 //listar los informes de cada personal
 controllersInforme.renderInformeListPersonal = async (req, res) => {
     var num = new Date();
-    console.log(num);
     var numInforme = num.toISOString().substring(8,10) + num.toISOString().substring(5,7) + num.toISOString().substring(0,4);
     res.render('informes/infUserList', { numInforme: numInforme});
 };
@@ -166,15 +165,16 @@ controllersInforme.listInformePersonal = async (req, res) => {
         botones = "<div class='btn-group btn-group-sm'>" +
         "<button class='btn btn-danger btn-sm btn-deleteInforme' idInforme='" + documents._id + "'><i class='fas fa-trash-alt'></i></button>" +
         "<button class='btn btn-primary btn-sm btn-loadInforme' idInforme='" + documents._id + "' data-toggle='modal' data-target='#editInforme'><i class='fas fa-edit'></i></button>" +
+        "<button class='btn btn-success btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
         "</div>";
         datos.push({
             i: i,
-            titulo: documents.tituloInforme,
             numero: documents.numInforme,
+            titulo: documents.tituloInforme,
             descripcion: documents.descripcionInforme,
-            fecha: documents.createdAt,
+            fecha: fechaConFormato(documents.createdAt),
             botones: botones
-        })
+        });
     })
     res.json(datos);
 }
@@ -196,7 +196,7 @@ controllersInforme.listInforme = async (req, res) => {
             if( documents._id.toString() == informe[i].userInforme.toString()){
 
                 botones = "<div class='btn-group btn-group-sm'>" +
-                "<button class='btn btn-primary btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
+                "<button class='btn btn-success btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
                 "</div>";
                 datos.push({
                     i: count,
@@ -216,7 +216,7 @@ controllersInforme.listInforme = async (req, res) => {
         if(presentado){
 
             botones = "<div class='btn-group btn-group-sm'>" +
-            "<button class='btn btn-primary btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
+            "<button class='btn btn-success btn-sm btn-viewInforme' idInforme='" + documents._id + "'><i class='far fa-eye'></i></button>" +
             "</div>";
             datos.push({
                 i: count,
@@ -233,3 +233,21 @@ controllersInforme.listInforme = async (req, res) => {
 }
 
 module.exports = controllersInforme;
+
+function fechaConFormato(fechaDB){
+    var fecha = '';
+    if(fechaDB != null || fechaDB != ""){
+        fecha = fechaDB;
+    }else{
+        var fecha = new Date();
+    }
+    var meses = ["Enero", "Febrero", "Marzo","Abril", "Mayo", "Junio", "Julio","Agosto", "Septiembre", "Octubre","Noviembre", "Diciembre"]
+    var dia = fecha.getDate();
+    var mes = fecha.getMonth();
+    var yyy = fecha.getFullYear();
+    var hora = fecha.getHours();
+    var minuto = fecha.getMinutes();
+    var segundo = fecha.getSeconds();
+    var fecha_formateada = dia + ' de ' + meses[mes] + ' del ' + yyy + ' ' + hora + ':' + minuto + ':' + segundo +'_horas.';
+    return fecha_formateada;
+}
